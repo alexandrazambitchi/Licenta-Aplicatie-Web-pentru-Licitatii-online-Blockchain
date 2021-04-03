@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Web3 from 'web3';
 import './App.css';
-import AuctionHouse from '../build/contracts/AuctionHouse.json'
+import AuctionHouse from '../abis/AuctionHouse.json'
 import Navbar from './Navbar'
 import Main from './Main'
 
@@ -26,8 +26,10 @@ class App extends Component {
   }
 
   async loadBlockchainData() {
+    // const accounts = await web3.eth.getAccounts()
     // Load account
-    const web3 = new Web3(window.ethereum)
+    // const web3 = new Web3(window.ethereum)
+    const web3 = window.web3
     const accounts = await web3.eth.getAccounts()
     this.setState({ account: accounts[0] })
     const networkId = await web3.eth.net.getId()
@@ -36,6 +38,13 @@ class App extends Component {
       const auctionHouse = new web3.eth.Contract(AuctionHouse.abi, networkData.address)
       this.setState({ auctionHouse })
       const productCount = await auctionHouse.methods.productCount().call()
+      this.setState({ productCount })
+      for(var i=1;i<=productCount;i++){
+        const product = await auctionHouse.methods.products(i).call()
+        this.setState({
+          products: [...this.state.products, product]
+        })
+      }
       this.setState({ loading: false})
     }
     else
@@ -72,7 +81,9 @@ class App extends Component {
             <main role="main" className="col-lg-12 d-flex">
               { this.state.loading 
                 ? <div id = "loader" className="text-center"><p className="text-center">Loading...</p></div> 
-                : <Main createProduct={this.createProduct}/>
+                : <Main 
+                  products={this.state.products} 
+                  createProduct={this.createProduct}/>
               }
               
             </main>
