@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Web3 from 'web3';
 import './App.css';
 import AuctionHouse from '../abis/AuctionHouse.json'
+import Auction from '../abis/Auction.json'
 import Navbar from './Navbar'
 import Main from './Main'
 
@@ -37,6 +38,8 @@ class App extends Component {
     if(networkData){
       const auctionHouse = new web3.eth.Contract(AuctionHouse.abi, networkData.address)
       this.setState({ auctionHouse })
+      const auction = new web3.eth.Contract(Auction.abi, networkData.address)
+      this.setState({ auction })
       const productCount = await auctionHouse.methods.productCount().call()
       this.setState({ productCount })
       for(var i=1;i<=productCount;i++){
@@ -70,6 +73,12 @@ class App extends Component {
       this.setState({ loading: false })
     })
   }
+
+  viewProduct(id){
+    
+  }
+
+
 
   render() {
     return (

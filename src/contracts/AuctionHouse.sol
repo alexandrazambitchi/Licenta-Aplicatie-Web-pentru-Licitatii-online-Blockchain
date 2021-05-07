@@ -1,9 +1,13 @@
 pragma solidity ^0.5.0;
+// pragma solidity >=0.7.0 <0.9.0;
 
 /**
  * The AuctionHouse
  contract does this and that...
  */
+
+import "./Auction.sol";
+
 contract AuctionHouse {
 	string public name;
 	uint public productCount = 0;
@@ -36,8 +40,14 @@ contract AuctionHouse {
         bool purchased
     );
 
+    event AuctionDetails(
+        uint id_product,
+        address payable beneficiary,
+        Auction auction
+    );
+
 	constructor() public {
-		name = "Auction House Art";
+		name = "Auction House of Art";
 	}
 
 	function createProduct (string memory _name, uint _price, string memory _artist) public {
@@ -68,4 +78,17 @@ contract AuctionHouse {
         // Trigger an event
         emit ProductPurchased(productCount, _product.name, _product.price, _product.artist_name, msg.sender, true);
     }
+
+    function createAuction (uint _id) public {
+        Product memory _product = products[_id];
+        address payable _seller = _product.owner;
+        // Make sure the product has a valid id
+        require(_product.id_product > 0 && _product.id_product <= productCount);
+        require(!_product.purchased);
+        require (time!=0);
+        Auction new_auction = Auction();
+        emit AuctionDetails(_id, _seller, new_auction);
+        
+    }
+    
 }

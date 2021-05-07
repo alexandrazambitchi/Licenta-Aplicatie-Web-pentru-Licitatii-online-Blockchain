@@ -58,15 +58,19 @@ class Main extends Component {
           <tbody id="productList">
             { this.props.products.map((product, key) => {
               return (
-                  <tr key ={key}>
-                    <th scope="row">{product.id_product.toString()}</th>
-                    <td>{product.name}</td>
-                    <td>{window.web3.utils.fromWei(product.price, 'Ether')} Eth</td>
-                    <td>{product.artist_name}</td>
-                    <td>{product.owner}</td>
-                    <td><button className="buyButton">Buy</button></td>
-                  </tr>
-              )
+                <tr key={key}>
+                  <th scope="row">{product.id_product.toString()}</th>
+                  <td>{product.name}</td>
+                  <td>
+                    {window.web3.utils.fromWei(product.price, "Ether")} Eth
+                  </td>
+                  <td>{product.artist_name}</td>
+                  <td>{product.owner}</td>
+                  <td>
+                    <button className="badge badge-primary">Buy</button>
+                  </td>
+                </tr>
+              );
             })}
             
           </tbody>
