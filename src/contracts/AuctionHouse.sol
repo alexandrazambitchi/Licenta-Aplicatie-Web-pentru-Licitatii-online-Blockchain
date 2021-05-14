@@ -6,8 +6,6 @@ pragma solidity ^0.5.0;
  contract does this and that...
  */
 
-// import "./Auction.sol";
-
 contract AuctionHouse {
 	string public name;
 	uint public productCount = 0;
@@ -23,7 +21,7 @@ contract AuctionHouse {
         string artist_name;
         address payable owner;
         bool purchased;
-        uint id_auction;
+        // uint id_auction;
     }
 
     // struct Client{
@@ -31,6 +29,7 @@ contract AuctionHouse {
     //     string name;
     //     address payable client_address;
     //     uint bid_value;
+    //     // uint auction_id;
     // }
 
     struct Auction{
@@ -52,8 +51,7 @@ contract AuctionHouse {
         uint price,
         string artist_name,
         address payable owner,
-        bool purchased,
-        uint id_auction
+        bool purchased
     );
 
     event ProductPurchased(
@@ -65,18 +63,27 @@ contract AuctionHouse {
         bool purchased
     );
 
-    // event AuctionCreated(
-    //     uint id_auction,
-    //     address payable beneficiary,
-    //     uint auctionEndTime,
-    //     address highestBidder,
-    //     uint highestBid,
-    //     uint clientCount,
-    //     bool ended,
-    //     uint id_product,
-    //     mapping(address => uint) clients,
-    //     mapping(address => string) clientNames
-    // );
+    event AuctionCreated(
+        uint id_auction,
+        address payable beneficiary,
+        uint auctionEndTime,
+        address highestBidder,
+        uint highestBid,
+        uint clientCount,
+        bool ended,
+        uint id_product
+    );
+
+    event AuctionUpdated(
+        uint id_auction,
+        address payable beneficiary,
+        uint auctionEndTime,
+        address highestBidder,
+        uint highestBid,
+        uint clientCount,
+        bool ended,
+        uint id_product
+    );
 
     event NewClient(
         uint id_client,
@@ -105,70 +112,58 @@ contract AuctionHouse {
         require(_price > 0);
         require (bytes(_artist).length > 0);
 		productCount++;
-        uint new_auction_id = createAuction(productCount);
-        products[productCount] = Product(productCount, _name,_price, _artist, msg.sender, false, new_auction_id);
-		emit ProductCreated(productCount, _name,_price, _artist, msg.sender, false, new_auction_id);
+        products[productCount] = Product(productCount, _name,_price, _artist, msg.sender, false);
+		emit ProductCreated(productCount, _name,_price, _artist, msg.sender, false);
 	}
 
-	function purchaseProduct(uint _id) public payable {
-        // Fetch the product
-        Product storage _product = products[_id];
-        address payable _seller = _product.owner;
-        // Make sure the product has a valid id
-        require(_product.id_product > 0 && _product.id_product <= productCount);
-        // Require that there is enough Ether in the transaction
-        require(msg.value >= _product.price);
-        // Require that the product has not been purchased already
-        require(!_product.purchased);
-        // Mark as purchased
-        _product.purchased = true;
-        // Update the product
-        products[_id] = _product;
-        // Pay the seller by sending them Ether
-        address(_seller).transfer(msg.value);
-        // Trigger an event
-        emit ProductPurchased(productCount, _product.name, _product.price, _product.artist_name, msg.sender, true);
-    }
+	// function purchaseProduct(uint _id) public payable {
+ //        // Fetch the product
+ //        Product storage _product = products[_id];
+ //        address payable _seller = _product.owner;
+ //        // Make sure the product has a valid id
+ //        require(_product.id_product > 0 && _product.id_product <= productCount);
+ //        // Require that there is enough Ether in the transaction
+ //        require(msg.value >= _product.price);
+ //        // Require that the product has not been purchased already
+ //        require(!_product.purchased);
+ //        // Mark as purchased
+ //        _product.purchased = true;
+ //        // Update the product
+ //        products[_id] = _product;
+ //        // Pay the seller by sending them Ether
+ //        address(_seller).transfer(msg.value);
+ //        // Trigger an event
+ //        emit ProductPurchased(productCount, _product.name, _product.price, _product.artist_name, msg.sender, true);
+ //    }
 
-    function createAuction (uint _id) public returns (uint auctionId) {
+    function createAuction (uint _id) public {
         Product storage _product = products[_id];
         require(_product.id_product > 0 && _product.id_product <= productCount);
         auctionCount++;
-        uint endTime = block.timestamp + 20 days;
+        uint endTime = now + 20 days;
         auctionList[auctionCount] = Auction(auctionCount, msg.sender, endTime, msg.sender, 0, 0, false, _product.id_product);
-        // emit AuctionCreated(auctionCount, msg.sender, endTime, '', 0, 0, 0, false, _product.id_product);
-        // emit ProductCreated(productCount, _name,_price, _artist, msg.sender, false);
+        emit AuctionCreated(auctionCount, msg.sender, endTime, msg.sender, 0, 0, false, _product.id_product);
     }
-
-    // function newClient (uint _id_auction, string memory _name, uint bid_value) public returns (Client new_client) {
-    //     Auction memory _auction = auctionList[_id_auction];
-    //     require(_auction.id_auction > 0 && _auction.id_auction <= auctionCount);
-    //     _auction.clientCount += 1;
-    //     Client new_client = Client(_auction.clientCount, _name, msg.sender, bid_value);
-    //     auctionList[_id_auction].clientList[auctionList[_id_auction].clientCount] = new_client;
-    // }
-
-    // function addAClient (uint _id_auction, string memory _name, uint bid_value) public {
-    //     Auction memory _auction = auctionList[_id_auction];
-    //     require(_auction.id_auction > 0 && _auction.id_auction <= auctionCount);
-    //     _auction.clientCount += 1;
-    //     Client memory client = newClient(_id_auction, _name, bid_value);
-    //     auctionList[_id_auction].clientList[auctionList[_id_auction].clientCount] = client;
-    // }
 
     function bid(uint product_id, string memory clientName) public payable {
         Product storage _product = products[product_id];
         require(_product.id_product > 0 && _product.id_product <= productCount);
-        uint auction_id = _product.id_auction;
-        Auction storage _auction = auctionList[auction_id];
+        // Product storage _product
+        // uint auction_id = auctionList[product_id];
+        Auction storage _auction = auctionList[product_id];
         require(block.timestamp <= _auction.auctionEndTime);
         require(msg.value > _auction.highestBid);
+        require (msg.sender != _auction.beneficiary);
+        
         if (_auction.highestBid != 0){
             _auction.clients[_auction.highestBidder] += _auction.highestBid;
             _auction.clientNames[_auction.highestBidder] = clientName;
         }
+        _auction.clientCount += 1;
         _auction.highestBidder = msg.sender;
         _auction.highestBid = msg.value;
+        auctionList[product_id] = _auction;
+        emit AuctionUpdated(_auction.id_auction, _auction.beneficiary, _auction.auctionEndTime, msg.sender, msg.value, _auction.clientCount, _auction.ended, product_id);
         emit HighestBidIncreased(msg.sender, msg.value);
     }
 
@@ -213,9 +208,13 @@ contract AuctionHouse {
 
         // 2. Effects
         _auction.ended = true;
+        auctionList[_id_auction] = _auction;
 
         Product storage _product = products[_auction.id_product];
+        require(_product.id_product > 0 && _product.id_product <= productCount);
+        require(!_product.purchased);
         _product.purchased = true;
+        products[_auction.id_product] = _product;
         emit AuctionEnded(_auction.highestBidder, _auction.highestBid);
 
         // 3. Interaction
