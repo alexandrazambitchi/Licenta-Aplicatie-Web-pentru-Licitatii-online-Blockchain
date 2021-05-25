@@ -77,6 +77,7 @@ module.exports = {
   // Set default mocha options here, use special reporters etc.
   mocha: {
     // timeout: 100000
+    enableTimeouts: false
   },
   contracts_directory: './src/contracts/',
   contracts_build_directory: './src/abis/',

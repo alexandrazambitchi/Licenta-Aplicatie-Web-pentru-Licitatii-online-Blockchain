@@ -4,6 +4,10 @@ import "./App.css";
 import AuctionHouse from "../abis/AuctionHouse.json";
 import Navbar from "./Navbar";
 import Main from "./Main";
+import AddProduct from './AddProduct';
+
+const ipfsClient = require('ipfs-api');
+const ipfs = ipfsClient({host: 'ipfs.infura.io', port: 5001, protocol: 'https'});
 
 class App extends Component {
   async componentWillMount() {
@@ -39,17 +43,31 @@ class App extends Component {
         networkData.address
       );
       this.setState({ auctionHouse });
-      // const auction = new web3.eth.Contract(Auction.abi, networkData.address)
-      // this.setState({ auction })
       const productCount = await auctionHouse.methods.productCount().call();
+      const auctionCount = await auctionHouse.methods.auctionCount().call();
+      const owner = await auctionHouse.methods.owner().call();
       this.setState({ productCount });
+      this.setState({ auctionCount });
+      this.setState({ owner });
       for (var i = 1; i <= productCount; i++) {
         const product = await auctionHouse.methods.products(i).call();
         this.setState({
           products: [...this.state.products, product],
         });
       }
+      for (var i = 1; i <= auctionCount; i++) {
+        const auction = await auctionHouse.methods.auctionList(i).call();
+        this.setState({
+          auctions: [...this.state.auctions, auction],
+        });
+      }
       this.setState({ loading: false });
+      if(this.state.account===this.state.owner){
+        this.setState({ admin: true });
+      }
+      else{
+        this.setState({ admin: false });
+      }
     } else {
       window.alert("Marketplace contract not deployed to detected network.");
     }
@@ -61,22 +79,49 @@ class App extends Component {
       account: "",
       productCount: 0,
       auctionCount: 0,
+      owner: "",
       products: [],
       auctions: [],
       loading: true,
+      admin: true
     };
     this.createProduct = this.createProduct.bind(this);
     this.createAuction = this.createAuction.bind(this);
+    this.bid = this.bid.bind(this);
   }
 
-  createProduct(name, price, artist) {
-    this.setState({ loading: true });
-    this.state.auctionHouse.methods
-      .createProduct(name, price, artist)
+  captureFile = event => {
+    event.preventDefault()
+    const file = event.target.files[0]
+    const reader = new window.FileReader()
+    reader.readAsArrayBuffer(file)
+
+    reader.onloadend = () => {
+      this.setState({ buffer: Buffer(reader.result)})
+      console.log('buffer', this.state.buffer)
+    }
+  }
+
+  createProduct(name, price, artist, category, description){
+
+    console.log("Subbiting file...");
+    
+
+    ipfs.add(this.state.buffer, (error, result) => {
+      console.log("Ipfs result", result);
+      if (error) {
+        console.error(error);
+        return;
+      }
+      this.setState({ loading: true });
+      this.state.auctionHouse.methods
+      .createProduct(name, price, artist, category, description, result[0].hash)
       .send({ from: this.state.account })
       .once("receipt", (receipt) => {
         this.setState({ loading: false });
       });
+    })
+    
   }
 
   createAuction(id){
@@ -89,11 +134,24 @@ class App extends Component {
       });
   }
 
+  bid(id_prod){
+    this.setState({loading: true});
+    this.state.auctionHouse.methods
+      .bid(id_prod)
+      .send({ from: this.state.account })
+      .once("receipt", (receipt) => {
+        this.setState({ loading: false });
+      });
+  }
+
   render() {
+    console.log("account")
+    console.log(this.state.account);
+    console.log("owner")
+    console.log(this.state.owner);
     return (
       <div>
         <Navbar account={this.state.account} />
-
         <div className="container-fluid mt-5">
           <div className="row">
             <main role="main" className="col-lg-12 d-flex">
@@ -102,10 +160,30 @@ class App extends Component {
                   <p className="text-center">Loading...</p>
                 </div>
               ) : (
-                <Main
-                  products={this.state.products}
-                  createProduct={this.createProduct}
-                />
+                <div>
+                  <AddProduct
+                    admin={this.state.admin}
+                    owner={this.state.owner}
+                    account={this.state.account}
+                    products={this.state.products}
+                    auctions={this.state.auctions}
+                    createProduct={this.createProduct}
+                    // createAuction={this.createAuction}
+                    // bid={this.bid}
+                    captureFile={this.captureFile}
+                    uploadImage={this.uploadImage}
+                  />
+                  <Main
+                    admin={this.state.admin}
+                    // owner={this.state.owner}
+                    // account={this.state.account}
+                    products={this.state.products}
+                    auctions={this.state.auctions}
+                    // createProduct={this.createProduct}
+                    createAuction={this.createAuction}
+                    bid={this.bid}
+                  />
+                </div>
               )}
             </main>
           </div>
