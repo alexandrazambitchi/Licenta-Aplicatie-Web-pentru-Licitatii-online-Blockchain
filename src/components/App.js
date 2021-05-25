@@ -9,6 +9,7 @@ import Info from "../pages/Info";
 import Error from "../pages/Error";
 import ProductPage from "../pages/ProductPage"
 import AddProduct from './AddProduct';
+import Product from "./Product";
 
 const ipfsClient = require('ipfs-api');
 const ipfs = ipfsClient({host: 'ipfs.infura.io', port: 5001, protocol: 'https'});
@@ -185,7 +186,7 @@ class App extends Component {
               uploadImage={this.uploadImage}
             />
           </Route>
-          <Route path="product/:id_product">
+          <Route exact path="/product/:id_product">
             <ProductPage
               products={this.props.products}
               admin={this.props.admin}

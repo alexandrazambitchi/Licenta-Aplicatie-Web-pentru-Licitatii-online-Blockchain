@@ -17,7 +17,7 @@ export default function Product({ image_hash, name, id_product, artist_name, cat
         <p>{category}</p>
         <Link
           to={`/product/${id_product}`}
-          className="btn btn-primary btn-details"
+          className="btn btn-outline-primary btn-details"
         >
           More
         </Link>
