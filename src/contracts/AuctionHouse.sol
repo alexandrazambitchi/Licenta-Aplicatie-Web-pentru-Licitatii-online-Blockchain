@@ -12,8 +12,7 @@ contract AuctionHouse {
 	uint public productCount = 0;
     uint public auctionCount = 0;
 	mapping(uint => Product) public products;
-    mapping(uint => Auction) public auctionList;  
-    mapping (uint => string) public images;
+    mapping(uint => Auction) public auctionList;
 
 	struct Product{
         uint id_product;

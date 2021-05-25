@@ -27,76 +27,86 @@ class AddProduct extends Component {
               );
             }}
           >
-            <div className="form-group mr-sm-2">
-              <input
-                id="productName"
-                type="text"
-                ref={(input) => {
-                  this.productName = input;
-                }}
-                className="form-control"
-                placeholder="Product Name"
-                required
-              />
-            </div>
-            <div className="form-group mr-sm-2">
-              <input
-                id="productPrice"
-                type="text"
-                ref={(input) => {
-                  this.productPrice = input;
-                }}
-                className="form-control"
-                placeholder="Product Price"
-                required
-              />
-            </div>
-            <div className="form-group mr-sm-2">
-              <input
-                id="productArtist"
-                type="text"
-                ref={(input) => {
-                  this.productArtist = input;
-                }}
-                className="form-control"
-                placeholder="Product Artist Name"
-                required
-              />
-            </div>
-            <div className="form-group mr-sm-2">
-              <input
-                id="productCategory"
-                type="text"
-                ref={(input) => {
-                  this.productCategory = input;
-                }}
-                className="form-control"
-                placeholder="Product Category"
-                required
-              />
-            </div>
-            <div className="form-group mr-sm-2">
-              <input
-                id="productDescription"
-                type="text"
-                ref={(input) => {
-                  this.productDescription = input;
-                }}
-                className="form-control"
-                placeholder="Product Description"
-                required
-              />
-            </div>
-            <div className="form-group mr-sm-2">
-              <input
-                type="file"
-                accept=".jpg, .jpeg, .png, .bmp"
-                onChange={this.props.captureFile}
-                placeholder="Product Image"
-              />
-            </div>
+            <fieldset class="form-group">
+              <div className="form-group row">
+                <label class="col-sm-2 col-form-label">Product name</label>
+                <div class="col-sm-10">
+                  <input
+                    id="productName"
+                    type="text"
+                    ref={(input) => {
+                      this.productName = input;
+                    }}
+                    className="form-control"
+                    placeholder="Product Name"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="form-group row">
+                <label class="col-sm-2 col-form-label">Product price</label>
+                <div class="col-sm-10">
+                  <input
+                    id="productPrice"
+                    type="text"
+                    ref={(input) => {
+                      this.productPrice = input;
+                    }}
+                    className="form-control"
+                    placeholder="Product Price"
+                    required
+                  />
+                  <small class="form-text text-muted">
+                    Price should be in ethers.
+                  </small>
+                </div>
+              </div>
+              <div className="form-group row mr-sm-2">
+                <input
+                  id="productArtist"
+                  type="text"
+                  ref={(input) => {
+                    this.productArtist = input;
+                  }}
+                  className="form-control"
+                  placeholder="Product Artist Name"
+                  required
+                />
+              </div>
+              <div className="form-group mr-sm-2">
+                <input
+                  id="productCategory"
+                  type="text"
+                  ref={(input) => {
+                    this.productCategory = input;
+                  }}
+                  className="form-control"
+                  placeholder="Product Category"
+                  required
+                />
+              </div>
+              <div className="form-group mr-sm-2">
+                <input
+                  id="productDescription"
+                  type="text"
+                  ref={(input) => {
+                    this.productDescription = input;
+                  }}
+                  className="form-control"
+                  placeholder="Product Description"
+                  required
+                />
+              </div>
+              <div className="form-group mr-sm-2">
+                <input
+                  type="file"
+                  accept=".jpg, .jpeg, .png, .bmp"
+                  onChange={this.props.captureFile}
+                  placeholder="Product Image"
+                />
+              </div>
 
-            {/* <div className="form-group mr-sm-2">
+              {/* <div className="form-group mr-sm-2">
               <input
                 id="imageFile"
                 type="text"
@@ -108,9 +118,10 @@ class AddProduct extends Component {
                 required
               />
             </div> */}
-            <button type="submit" className="btn btn-primary">
-              Add Product
-            </button>
+              <button type="submit" className="btn btn-primary">
+                Add Product
+              </button>
+            </fieldset>
           </form>
         </div>
       );

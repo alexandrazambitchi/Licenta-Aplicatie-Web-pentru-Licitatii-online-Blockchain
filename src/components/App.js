@@ -1,9 +1,13 @@
 import React, { Component } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
 import Web3 from "web3";
 import "./App.css";
 import AuctionHouse from "../abis/AuctionHouse.json";
 import Navbar from "./Navbar";
-import Main from "./Main";
+import Home from "../pages/Home"
+import Info from "../pages/Info";
+import Error from "../pages/Error";
+import ProductPage from "../pages/ProductPage"
 import AddProduct from './AddProduct';
 
 const ipfsClient = require('ipfs-api');
@@ -145,50 +149,57 @@ class App extends Component {
   }
 
   render() {
-    console.log("account")
-    console.log(this.state.account);
-    console.log("owner")
-    console.log(this.state.owner);
     return (
-      <div>
-        <Navbar account={this.state.account} />
-        <div className="container-fluid mt-5">
-          <div className="row">
-            <main role="main" className="col-lg-12 d-flex">
-              {this.state.loading ? (
-                <div id="loader" className="text-center">
-                  <p className="text-center">Loading...</p>
-                </div>
-              ) : (
-                <div>
-                  <AddProduct
-                    admin={this.state.admin}
-                    owner={this.state.owner}
-                    account={this.state.account}
-                    products={this.state.products}
-                    auctions={this.state.auctions}
-                    createProduct={this.createProduct}
-                    // createAuction={this.createAuction}
-                    // bid={this.bid}
-                    captureFile={this.captureFile}
-                    uploadImage={this.uploadImage}
-                  />
-                  <Main
-                    admin={this.state.admin}
-                    // owner={this.state.owner}
-                    // account={this.state.account}
-                    products={this.state.products}
-                    auctions={this.state.auctions}
-                    // createProduct={this.createProduct}
-                    createAuction={this.createAuction}
-                    bid={this.bid}
-                  />
-                </div>
-              )}
-            </main>
-          </div>
-        </div>
-      </div>
+      <Router>
+        <Navbar account={this.state.account} admin={this.state.admin} />
+        <Switch>
+          <Route exact path="/">
+            <Home
+              admin={this.state.admin}
+              owner={this.state.owner}
+              account={this.state.account}
+              products={this.state.products}
+              auctions={this.state.auctions}
+              productCount={this.state.productCount}
+              createProduct={this.createProduct}
+              createAuction={this.createAuction}
+              bid={this.bid}
+              captureFile={this.captureFile}
+              uploadImage={this.uploadImage}
+            />
+          </Route>
+          <Route exact path="/about">
+            <Info />
+          </Route>
+          <Route exact path="/addproduct">
+            <AddProduct
+              admin={this.props.admin}
+              owner={this.props.owner}
+              account={this.props.account}
+              products={this.props.products}
+              auctions={this.props.auctions}
+              createProduct={this.createProduct}
+              // createAuction={this.createAuction}
+              // bid={this.bid}
+              captureFile={this.captureFile}
+              uploadImage={this.uploadImage}
+            />
+          </Route>
+          <Route path="product/:id_product">
+            <ProductPage
+              products={this.props.products}
+              admin={this.props.admin}
+              createAuction={this.createAuction}
+              bid={this.bid}
+              auctions={this.props.auctions}
+              account={this.props.account}
+            />
+          </Route>
+          <Route path="*">
+            <Error />
+          </Route>
+        </Switch>
+      </Router>
     );
   }
 }

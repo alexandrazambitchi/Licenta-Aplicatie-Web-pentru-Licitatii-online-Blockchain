@@ -18644,12 +18644,13 @@
         }
       },
       "links": {},
-      "address": "0x647Da4E1879d50c4225010dE61027bD31f069d21",
-      "transactionHash": "0x080e15c36d5228883865f0fdb7f55a3a33b9a7d1f814d677218fcbdd8a7a9e87"
+      "address": "0xaEd67f775B03C8B070C754e0f702f2a23153D122",
+      "transactionHash": "0x88345af694845c21a465b417eb999725442e492b1710aaf3bd867d3661b9db64"
     }
   },
   "schemaVersion": "3.0.22",
-  "updatedAt": "2021-05-25T12:23:01.145Z",
+  "updatedAt": "2021-05-25T17:29:19.585Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {}
   },
