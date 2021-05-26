@@ -89,6 +89,7 @@ class App extends Component {
     this.createProduct = this.createProduct.bind(this);
     this.createAuction = this.createAuction.bind(this);
     this.bid = this.bid.bind(this);
+    this.auctionEnd = this.auctionEnd.bind(this);
   }
 
   captureFile = event => {
@@ -135,10 +136,20 @@ class App extends Component {
       });
   }
 
-  bid(id_prod){
+  bid(id_auction, value, id_prod){
     this.setState({loading: true});
     this.state.auctionHouse.methods
-      .bid(id_prod)
+      .bid(id_auction, value, id_prod)
+      .send({ from: this.state.account })
+      .once("receipt", (receipt) => {
+        this.setState({ loading: false });
+      });
+  }
+
+  auctionEnd(id_auction){
+    this.setState({ loading: true });
+    this.state.auctionHouse.methods
+      .auctionEnd(id_auction)
       .send({ from: this.state.account })
       .once("receipt", (receipt) => {
         this.setState({ loading: false });
@@ -186,10 +197,12 @@ class App extends Component {
             <ProductPage
               products={this.state.products}
               admin={this.state.admin}
+              auctionCount={this.state.auctionCount}
               createAuction={this.createAuction}
               bid={this.bid}
               auctions={this.state.auctions}
               account={this.state.account}
+              auctionEnd={this.auctionEnd}
             />
           </Route>
           <Route path="*">

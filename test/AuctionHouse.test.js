@@ -42,7 +42,7 @@ contract('AuctionHouse', ([deployer, seller, buyer]) =>{
 			productCount = await auctionHouse.productCount()
 			new_auction = await auctionHouse.createAuction(productCount, { from: deployer})
 			auctionCount = await auctionHouse.auctionCount()
-			bid = await auctionHouse.bid(productCount, { from: buyer, value: web3.utils.toWei('2', 'Ether')})
+			bid = await auctionHouse.bid(auctionCount, web3.utils.toWei('2', 'Ether'), productCount, { from: buyer})
 			
 			// ended = await auctionHouse.auctionEnd(auctionCount)
 		})

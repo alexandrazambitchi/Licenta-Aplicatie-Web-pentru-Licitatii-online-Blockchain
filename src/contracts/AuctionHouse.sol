@@ -135,23 +135,24 @@ contract AuctionHouse {
         emit AuctionCreated(auctionCount, endTime, address(0), _product.price, 0, false, _product.id_product);
     }
 
-    function bid(uint product_id) public payable {
+    function bid(uint auction_id, uint bid_value, uint product_id) public payable {
         Product storage _product = products[product_id];
-        require(_product.id_product > 0 && _product.id_product <= productCount);
-        Auction storage _auction = auctionList[product_id];
-        require(block.timestamp <= _auction.auctionEndTime);
-        require(msg.value > _auction.highestBid);
-        require(msg.sender != owner);
+        require(_product.id_product > 0 && _product.id_product <= productCount, "Product not found");
+        Auction storage _auction = auctionList[auction_id];
+        require(_auction.id_auction > 0 && _auction.id_auction <= auctionCount, "Auction not found");
+        require(block.timestamp <= _auction.auctionEndTime, "Auction ended");
+        require(bid_value > _auction.highestBid, "Value too little");
+        require(msg.sender != owner, "Owner!!!");
         if (_auction.highestBid != _product.price){
             _auction.clients[_auction.highestBidder] = _auction.highestBid;
         }
         _auction.offerCount += 1;
         _auction.highestBidder = msg.sender;
-        _auction.highestBid = msg.value;
+        _auction.highestBid = bid_value;
         // _auction.clientNames[_auction.highestBidder] = clientName;
-        auctionList[product_id] = _auction;
-        emit AuctionUpdated(_auction.id_auction, _auction.auctionEndTime, msg.sender, msg.value, _auction.offerCount, _auction.ended, product_id);
-        emit HighestBidIncreased(msg.sender, msg.value);
+        auctionList[auction_id] = _auction;
+        emit AuctionUpdated(auction_id, _auction.auctionEndTime, msg.sender, bid_value, _auction.offerCount, _auction.ended, product_id);
+        emit HighestBidIncreased(msg.sender, bid_value);
     }
 
     // function withdraw(uint auction_id) public returns (bool) {

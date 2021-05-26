@@ -1,6 +1,16 @@
 import React, { Component } from "react";
 import { useParams, Link } from "react-router-dom";
-import Product from "../components/Product";
+import Auction from "../components/Auction";
+
+function checkIfEnded(endTime, id_auction){
+  var eta = endTime - Date.now();
+  if(eta==0){
+    return true
+  }
+  else{
+    return false
+  }
+}
 
 const ProductPage = props => {
     const params = useParams();
@@ -44,6 +54,123 @@ const ProductPage = props => {
                         <Link to="/" className="btn btn-primary">
                           Back Home
                         </Link>
+                        <div>
+                          {props.admin ? (
+                            <p>
+                              {!product.auction_started ? (
+                                <button
+                                  className="btn btn-primary"
+                                  name={product.id_product}
+                                  onClick={(event) => {
+                                    props.createAuction(product.id_product);
+                                  }}
+                                >
+                                  Start Auction
+                                </button>
+                              ) : (
+                                <div>Auction started</div>
+                              )}
+                            </p>
+                          ) : (
+                            <p>
+                              {!product.auction_started ? (
+                                <p>Auction not started</p>
+                              ) : (
+                                <div>
+                                  <section className="section">
+                                    {props.auctions.map((auction, key) => {
+                                      return (
+                                        <div>
+                                          {auction.id_product ===
+                                          params.id_product ? (
+                                            <section>
+                                              <p>You can place your offer</p>
+                                              <p>
+                                                Starting price:{" "}
+                                                {window.web3.utils.fromWei(
+                                                  product.price,
+                                                  "Ether"
+                                                )}{" "}
+                                                Eth
+                                              </p>
+                                              {!product.auction_ended ? (
+                                                <form
+                                                  onSubmit={(event) => {
+                                                    event.preventDefault();
+                                                    const value =
+                                                      window.web3.utils.toWei(
+                                                        this.bidValue.value.toString(),
+                                                        "Ether"
+                                                      );
+                                                    props.bid(
+                                                      auction.id_auction,
+                                                      value,
+                                                      product.id_product
+                                                    );
+                                                  }}
+                                                >
+                                                  <div className="form-group">
+                                                    <label
+                                                      for="bidvalue"
+                                                      className="form-label mt-4"
+                                                    >
+                                                      Bid Value
+                                                    </label>
+                                                    <input
+                                                      id="bidValue"
+                                                      type="text"
+                                                      ref={(input) => {
+                                                        this.bidValue = input;
+                                                      }}
+                                                      className="form-control"
+                                                      placeholder="Bid Value"
+                                                      required
+                                                    />
+                                                    <small class="form-text text-muted">
+                                                      Price should be in ethers.
+                                                    </small>
+                                                  </div>
+                                                  <button
+                                                    type="submit"
+                                                    className="btn btn-primary"
+                                                  >
+                                                    Place bid
+                                                  </button>
+                                                </form>
+                                              ) : (
+                                                <p>Auction ended</p>
+                                              )}
+                                              {auction.offerCount < 1 ? (
+                                                <h2 className="section-title">
+                                                  No bets places!
+                                                </h2>
+                                              ) : (
+                                                <section>
+                                                  <h2 className="section-title">
+                                                    Details:
+                                                  </h2>
+                                                  {checkIfEnded(auction.auctionEndTime, auction.id_auction) ? (
+                                                    props.auctionEnd(auction.id_auction)
+                                                  ) : null
+                                                  }
+                                                  <Auction
+                                                    key={key}
+                                                    {...auction}
+                                                  />
+                                                </section>
+                                              )}
+                                            </section>
+                                          ) : null}
+                                        </div>
+                                      );
+                                    })}
+                                  </section>
+                                  
+                                </div>
+                              )}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </section>
@@ -52,6 +179,8 @@ const ProductPage = props => {
             );
           })}
         </div>
+        <p></p>
+        
       </div>
     );
 }
