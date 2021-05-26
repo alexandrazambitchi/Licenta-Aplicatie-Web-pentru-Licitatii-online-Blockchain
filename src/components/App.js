@@ -9,6 +9,8 @@ import Info from "../pages/Info";
 import Error from "../pages/Error";
 import ProductPage from "../pages/ProductPage"
 import AddProduct from './AddProduct';
+import Main from "./Main"
+import ProductListSoonOnAuction from "./ProductListSoonOnAuction";
 
 const ipfsClient = require('ipfs-api');
 const ipfs = ipfsClient({host: 'ipfs.infura.io', port: 5001, protocol: 'https'});
@@ -63,10 +65,9 @@ class App extends Component {
         });
       }
       this.setState({ loading: false });
-      if(this.state.account===this.state.owner){
+      if (this.state.account === this.state.owner) {
         this.setState({ admin: true });
-      }
-      else{
+      } else {
         this.setState({ admin: false });
       }
     } else {
@@ -84,30 +85,29 @@ class App extends Component {
       products: [],
       auctions: [],
       loading: true,
-      admin: true
+      admin: true,
     };
     this.createProduct = this.createProduct.bind(this);
     this.createAuction = this.createAuction.bind(this);
     this.bid = this.bid.bind(this);
     this.auctionEnd = this.auctionEnd.bind(this);
+    this.deleteProduct = this.deleteProduct.bind(this);
   }
 
-  captureFile = event => {
-    event.preventDefault()
-    const file = event.target.files[0]
-    const reader = new window.FileReader()
-    reader.readAsArrayBuffer(file)
+  captureFile = (event) => {
+    event.preventDefault();
+    const file = event.target.files[0];
+    const reader = new window.FileReader();
+    reader.readAsArrayBuffer(file);
 
     reader.onloadend = () => {
-      this.setState({ buffer: Buffer(reader.result)})
-      console.log('buffer', this.state.buffer)
-    }
-  }
+      this.setState({ buffer: Buffer(reader.result) });
+      console.log("buffer", this.state.buffer);
+    };
+  };
 
-  createProduct(name, price, artist, category, description){
-
+  createProduct(name, price, artist, category, description) {
     console.log("Subbiting file...");
-    
 
     ipfs.add(this.state.buffer, (error, result) => {
       console.log("Ipfs result", result);
@@ -117,16 +117,22 @@ class App extends Component {
       }
       this.setState({ loading: true });
       this.state.auctionHouse.methods
-      .createProduct(name, price, artist, category, description, result[0].hash)
-      .send({ from: this.state.account })
-      .once("receipt", (receipt) => {
-        this.setState({ loading: false });
-      });
-    })
-    
+        .createProduct(
+          name,
+          price,
+          artist,
+          category,
+          description,
+          result[0].hash
+        )
+        .send({ from: this.state.account })
+        .once("receipt", (receipt) => {
+          this.setState({ loading: false });
+        });
+    });
   }
 
-  createAuction(id){
+  createAuction(id) {
     this.setState({ loading: true });
     this.state.auctionHouse.methods
       .createAuction(id)
@@ -136,8 +142,8 @@ class App extends Component {
       });
   }
 
-  bid(id_auction, value, id_prod){
-    this.setState({loading: true});
+  bid(id_auction, value, id_prod) {
+    this.setState({ loading: true });
     this.state.auctionHouse.methods
       .bid(id_auction, value, id_prod)
       .send({ from: this.state.account })
@@ -146,10 +152,20 @@ class App extends Component {
       });
   }
 
-  auctionEnd(id_auction){
+  auctionEnd(id_auction) {
     this.setState({ loading: true });
     this.state.auctionHouse.methods
       .auctionEnd(id_auction)
+      .send({ from: this.state.account })
+      .once("receipt", (receipt) => {
+        this.setState({ loading: false });
+      });
+  }
+
+  deleteProduct(id_product) {
+    this.setState({ loading: true });
+    this.state.auctionHouse.methods
+      .deleteProduct(id_product)
       .send({ from: this.state.account })
       .once("receipt", (receipt) => {
         this.setState({ loading: false });
@@ -174,6 +190,18 @@ class App extends Component {
               bid={this.bid}
               captureFile={this.captureFile}
               uploadImage={this.uploadImage}
+              deleteProduct={this.deleteProduct}
+            />
+          </Route>
+          <Route exact path="/soonauction">
+            <ProductListSoonOnAuction
+              admin={this.state.admin}
+              productCount={this.state.productCount}
+              products={this.state.products}
+              auctions={this.state.auctions}
+              createAuction={this.createAuction}
+              bid={this.bid}
+              deleteProduct={this.deleteProduct}s
             />
           </Route>
           <Route exact path="/about">
@@ -191,6 +219,18 @@ class App extends Component {
               // bid={this.bid}
               captureFile={this.captureFile}
               uploadImage={this.uploadImage}
+              deleteProduct={this.deleteProduct}
+            />
+          </Route>
+          <Route exact path="/activeauction">
+            <Main
+              admin={this.state.admin}
+              productCount={this.state.productCount}
+              products={this.state.products}
+              auctions={this.state.auctions}
+              createAuction={this.createAuction}
+              bid={this.bid}
+              deleteProduct={this.deleteProduct}
             />
           </Route>
           <Route exact path="/product/:id_product">
@@ -203,6 +243,7 @@ class App extends Component {
               auctions={this.state.auctions}
               account={this.state.account}
               auctionEnd={this.auctionEnd}
+              deleteProduct={this.deleteProduct}
             />
           </Route>
           <Route path="*">

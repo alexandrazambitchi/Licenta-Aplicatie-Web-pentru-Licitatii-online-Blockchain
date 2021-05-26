@@ -5,7 +5,7 @@ import { format } from "date-fns"
 import Countdown from "../components/Countdown";
 // import {auctionEnd} from "../components/App"
 export default function Auction({
-  id_auction, auctionEndTime, clients, offerCount, highestBid, id_product
+  id_auction, auctionEndTime, clients, offerCount, highestBid, id_product, highestBidder
 }) {
   // var date = moment({ auctionEndTime } * 1000).format("DD/MM/YYYY");
   let endDate = new Date(auctionEndTime*1000)
@@ -17,9 +17,8 @@ export default function Auction({
           Time left to place offer: <Countdown date={endDate} />{" "}
         </p>
         <p>Number of offers until now: {offerCount}</p>
-        <p>
-          Highest bid: {window.web3.utils.fromWei(highestBid, "Ether")} Eth
-        </p>
+        <p>Highest bid: {window.web3.utils.fromWei(highestBid, "Ether")} Eth</p>
+        <p>Highest bidder: {highestBidder}</p>
       </div>
     </article>
   );

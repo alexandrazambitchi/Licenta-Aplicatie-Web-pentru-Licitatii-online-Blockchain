@@ -1,13 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import AddProduct from './AddProduct';
-import Product from './Product';
+import AddProduct from "./AddProduct";
 import ProductSoon from "./ProductSoon";
 import "./App.css";
-import ProductListSoonOnAuction from './ProductListSoonOnAuction';
 
-class Main extends Component {
-
+class ProductListSoonOnAuction extends Component {
   render() {
     return (
       <div id="content">
@@ -26,11 +23,6 @@ class Main extends Component {
               <h2 className="section-title">Products</h2>
               <div className="product-center">
                 {this.props.products.map((product, key) => {
-                  return <Product key={key} {...product} />;
-                })}
-              </div>
-              <div className="product-center">
-                {this.props.products.map((product, key) => {
                   return <ProductSoon key={key} {...product} />;
                 })}
               </div>
@@ -42,4 +34,4 @@ class Main extends Component {
   }
 }
 
-export default Main;
+export default ProductListSoonOnAuction;

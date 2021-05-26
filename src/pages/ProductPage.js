@@ -2,14 +2,17 @@ import React, { Component } from "react";
 import { useParams, Link } from "react-router-dom";
 import Auction from "../components/Auction";
 
-function checkIfEnded(endTime, id_auction){
+function checkIfEnded(endTime, props, id_auction){
   var eta = endTime - Date.now();
-  if(eta==0){
-    return true
-  }
-  else{
-    return false
-  }
+  console.log(eta)
+  // if(eta<0 && ended==false){
+  //   ended=true
+  //   return true
+  // }
+  // else{
+  //   return false
+  // }
+  setTimeout(props.auctionEnd(id_auction), eta);
 }
 
 const ProductPage = props => {
@@ -56,22 +59,34 @@ const ProductPage = props => {
                         </Link>
                         <div>
                           {props.admin ? (
-                            <p>
-                              {!product.auction_started ? (
-                                <button
-                                  className="btn btn-primary"
-                                  name={product.id_product}
-                                  onClick={(event) => {
-                                    props.createAuction(product.id_product);
-                                  }}
-                                >
-                                  Start Auction
-                                </button>
-                              ) : (
-                                <div>Auction started</div>
-                              )}
-                            </p>
-                          ) : (
+                            <section>
+                              <p></p>
+                              <p>
+                                {!product.auction_started ? (
+                                  <button
+                                    className="btn btn-primary"
+                                    name={product.id_product}
+                                    onClick={(event) => {
+                                      props.createAuction(product.id_product);
+                                    }}
+                                  >
+                                    Start Auction
+                                  </button>
+                                ) : (
+                                  <div>Auction started</div>
+                                )}
+                              </p>
+                              <button
+                                className="btn btn-primary"
+                                name={product.id_product}
+                                onClick={(event) => {
+                                  props.deleteProduct(product.id_product);
+                                }}
+                              >
+                                Delete product
+                              </button>
+                            </section>
+                          ) : null}
                             <p>
                               {!product.auction_started ? (
                                 <p>Auction not started</p>
@@ -94,82 +109,90 @@ const ProductPage = props => {
                                                 Eth
                                               </p>
                                               {!product.auction_ended ? (
-                                                <form
-                                                  onSubmit={(event) => {
-                                                    event.preventDefault();
-                                                    const value =
-                                                      window.web3.utils.toWei(
-                                                        this.bidValue.value.toString(),
-                                                        "Ether"
-                                                      );
-                                                    props.bid(
-                                                      auction.id_auction,
-                                                      value,
-                                                      product.id_product
-                                                    );
-                                                  }}
-                                                >
-                                                  <div className="form-group">
-                                                    <label
-                                                      for="bidvalue"
-                                                      className="form-label mt-4"
-                                                    >
-                                                      Bid Value
-                                                    </label>
-                                                    <input
-                                                      id="bidValue"
-                                                      type="text"
-                                                      ref={(input) => {
-                                                        this.bidValue = input;
+                                                <section>
+                                                  {!props.admin ? (
+                                                    <form
+                                                      onSubmit={(event) => {
+                                                        event.preventDefault();
+                                                        const value =
+                                                          window.web3.utils.toWei(
+                                                            this.bidValue.value.toString(),
+                                                            "Ether"
+                                                          );
+                                                        props.bid(
+                                                          auction.id_auction,
+                                                          value,
+                                                          product.id_product
+                                                        );
                                                       }}
-                                                      className="form-control"
-                                                      placeholder="Bid Value"
-                                                      required
-                                                    />
-                                                    <small class="form-text text-muted">
-                                                      Price should be in ethers.
-                                                    </small>
-                                                  </div>
-                                                  <button
-                                                    type="submit"
-                                                    className="btn btn-primary"
-                                                  >
-                                                    Place bid
-                                                  </button>
-                                                </form>
+                                                    >
+                                                      <div className="form-group">
+                                                        <label
+                                                          for="bidvalue"
+                                                          className="form-label mt-4"
+                                                        >
+                                                          Bid Value
+                                                        </label>
+                                                        <input
+                                                          id="bidValue"
+                                                          type="text"
+                                                          ref={(input) => {
+                                                            this.bidValue =
+                                                              input;
+                                                          }}
+                                                          className="form-control"
+                                                          placeholder="Bid Value"
+                                                          required
+                                                        />
+                                                        <small class="form-text text-muted">
+                                                          Price should be in
+                                                          ethers.
+                                                        </small>
+                                                      </div>
+                                                      <button
+                                                        type="submit"
+                                                        className="btn btn-primary"
+                                                      >
+                                                        Place bid
+                                                      </button>
+                                                    </form>
+                                                  ) : null}
+                                                </section>
                                               ) : (
                                                 <p>Auction ended</p>
                                               )}
-                                              {auction.offerCount < 1 ? (
+                                              {/* {auction.offerCount < 1 ? (
                                                 <h2 className="section-title">
-                                                  No bets places!
+                                                  No bets placed!
                                                 </h2>
-                                              ) : (
-                                                <section>
-                                                  <h2 className="section-title">
-                                                    Details:
-                                                  </h2>
-                                                  {checkIfEnded(auction.auctionEndTime, auction.id_auction) ? (
-                                                    props.auctionEnd(auction.id_auction)
-                                                  ) : null
-                                                  }
-                                                  <Auction
-                                                    key={key}
-                                                    {...auction}
-                                                  />
-                                                </section>
-                                              )}
+                                              ) : ( */}
+                                              <section>
+                                                <h2 className="section-title">
+                                                  Details:
+                                                </h2>
+                                                {checkIfEnded(
+                                                  auction.auctionEndTime,
+                                                  props, auction.id_auction
+                                                )
+                                                  ? props.auctionEnd(
+                                                      auction.id_auction
+                                                    )
+                                                  : null}
+                                                <Auction
+                                                  key={key}
+                                                  {...auction}
+                                                />
+                                              </section>
+                                              {/* )} */}
                                             </section>
                                           ) : null}
                                         </div>
                                       );
                                     })}
                                   </section>
-                                  
                                 </div>
                               )}
                             </p>
-                          )}
                         </div>
                       </div>
                     </div>
@@ -179,7 +202,7 @@ const ProductPage = props => {
             );
           })}
         </div>
-        <p></p>
+        {/* <p></p> */}
         
       </div>
     );

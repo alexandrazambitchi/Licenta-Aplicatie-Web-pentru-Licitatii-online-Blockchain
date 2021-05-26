@@ -23,6 +23,18 @@ class Navbar extends Component {
                 </Link>
               </li>
               <li className="nav-item">
+                <Link className="nav-link" to="/activeauction">
+                  Active Auctions
+                  <span className="visually-hidden">(current)</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/soonauction">
+                  Soon On Auction
+                  <span className="visually-hidden">(current)</span>
+                </Link>
+              </li>
+              <li className="nav-item">
                 {this.props.admin ? (
                   <p>
                     <Link className="nav-link" to="/addproduct">

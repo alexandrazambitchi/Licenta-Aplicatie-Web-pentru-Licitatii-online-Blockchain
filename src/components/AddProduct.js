@@ -25,6 +25,7 @@ class AddProduct extends Component {
                 category,
                 description
               );
+              
             }}
           >
             <fieldset class="form-group">
