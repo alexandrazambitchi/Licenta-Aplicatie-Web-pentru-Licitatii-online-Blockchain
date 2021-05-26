@@ -9,7 +9,6 @@ import Info from "../pages/Info";
 import Error from "../pages/Error";
 import ProductPage from "../pages/ProductPage"
 import AddProduct from './AddProduct';
-import Product from "./Product";
 
 const ipfsClient = require('ipfs-api');
 const ipfs = ipfsClient({host: 'ipfs.infura.io', port: 5001, protocol: 'https'});
@@ -34,9 +33,6 @@ class App extends Component {
   }
 
   async loadBlockchainData() {
-    // const accounts = await web3.eth.getAccounts()
-    // Load account
-    // const web3 = new Web3(window.ethereum)
     const web3 = window.web3;
     const accounts = await web3.eth.getAccounts();
     this.setState({ account: accounts[0] });
@@ -174,11 +170,11 @@ class App extends Component {
           </Route>
           <Route exact path="/addproduct">
             <AddProduct
-              admin={this.props.admin}
-              owner={this.props.owner}
-              account={this.props.account}
-              products={this.props.products}
-              auctions={this.props.auctions}
+              admin={this.state.admin}
+              owner={this.state.owner}
+              account={this.state.account}
+              products={this.state.products}
+              auctions={this.state.auctions}
               createProduct={this.createProduct}
               // createAuction={this.createAuction}
               // bid={this.bid}
@@ -188,12 +184,12 @@ class App extends Component {
           </Route>
           <Route exact path="/product/:id_product">
             <ProductPage
-              products={this.props.products}
-              admin={this.props.admin}
+              products={this.state.products}
+              admin={this.state.admin}
               createAuction={this.createAuction}
               bid={this.bid}
-              auctions={this.props.auctions}
-              account={this.props.account}
+              auctions={this.state.auctions}
+              account={this.state.account}
             />
           </Route>
           <Route path="*">

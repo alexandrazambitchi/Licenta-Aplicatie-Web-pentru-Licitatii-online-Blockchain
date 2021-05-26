@@ -33,7 +33,11 @@ class Navbar extends Component {
               </li>
             </ul>
             <div>
-              <span id="account">Account: {this.props.account}</span>
+              {this.props.admin ? (
+                <span id="account">Account: admin</span>
+              ) : (
+                <span id="account">Account: {this.props.account}</span>
+              )}
             </div>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import ProductPage from "../pages/ProductPage"
+import "./App.css";
 export default function Product({ image_hash, name, id_product, artist_name, category }) {
   return (
     <article className="product">
@@ -8,7 +8,7 @@ export default function Product({ image_hash, name, id_product, artist_name, cat
         <img
           src={`https://ipfs.infura.io/ipfs/${image_hash}`}
           alt={name}
-          style={{ maxWidth: "420px" }}
+          style={{ maxWidth: "210px" }}
         />
       </div>
       <div className="product-footer">
