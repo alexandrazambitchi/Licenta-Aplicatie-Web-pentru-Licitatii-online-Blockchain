@@ -1,19 +1,23 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Web3 from "web3";
 import "./App.css";
 import AuctionHouse from "../abis/AuctionHouse.json";
-import Navbar from "./Navbar";
-import Home from "../pages/Home"
-import Info from "../pages/Info";
-import Error from "../pages/Error";
-import ProductPage from "../pages/ProductPage"
-import AddProduct from './AddProduct';
-import Main from "./Main"
-import ProductListSoonOnAuction from "./ProductListSoonOnAuction";
+import Navbar from "./MainPage/Navbar";
+import Home from "./pages/Home";
+import Info from "./pages/Info";
+import Error from "./pages/Error";
+import ProductPage from "./Products/ProductPage";
+import AddProduct from "./Products/AddProduct";
+import Main from "./MainPage/Main";
+import ProductListSoonOnAuction from "./Products/ProductListSoonOnAuction";
 
-const ipfsClient = require('ipfs-api');
-const ipfs = ipfsClient({host: 'ipfs.infura.io', port: 5001, protocol: 'https'});
+const ipfsClient = require("ipfs-api");
+const ipfs = ipfsClient({
+  host: "ipfs.infura.io",
+  port: 5001,
+  protocol: "https",
+});
 
 class App extends Component {
   async componentWillMount() {
@@ -48,9 +52,11 @@ class App extends Component {
       this.setState({ auctionHouse });
       const productCount = await auctionHouse.methods.productCount().call();
       const auctionCount = await auctionHouse.methods.auctionCount().call();
+      const productsOnAuction = await auctionHouse.methods.productsOnAuction().call();
       const owner = await auctionHouse.methods.owner().call();
       this.setState({ productCount });
       this.setState({ auctionCount });
+      this.setState({ productsOnAuction });
       this.setState({ owner });
       for (var i = 1; i <= productCount; i++) {
         const product = await auctionHouse.methods.products(i).call();
@@ -81,6 +87,7 @@ class App extends Component {
       account: "",
       productCount: 0,
       auctionCount: 0,
+      productsOnAuction: 0,
       owner: "",
       products: [],
       auctions: [],
@@ -107,7 +114,7 @@ class App extends Component {
   };
 
   createProduct(name, price, artist, category, description) {
-    console.log("Subbiting file...");
+    console.log("Submiting file...");
 
     ipfs.add(this.state.buffer, (error, result) => {
       console.log("Ipfs result", result);
@@ -152,10 +159,10 @@ class App extends Component {
       });
   }
 
-  auctionEnd(id_auction) {
+  auctionEnd(id) {
     this.setState({ loading: true });
     this.state.auctionHouse.methods
-      .auctionEnd(id_auction)
+      .auctionEnd(id)
       .send({ from: this.state.account })
       .once("receipt", (receipt) => {
         this.setState({ loading: false });
@@ -185,6 +192,7 @@ class App extends Component {
               products={this.state.products}
               auctions={this.state.auctions}
               productCount={this.state.productCount}
+              productsOnAuction={this.state.productsOnAuction}
               createProduct={this.createProduct}
               createAuction={this.createAuction}
               bid={this.bid}
@@ -197,11 +205,12 @@ class App extends Component {
             <ProductListSoonOnAuction
               admin={this.state.admin}
               productCount={this.state.productCount}
+              productsOnAuction={this.state.productsOnAuction}
               products={this.state.products}
               auctions={this.state.auctions}
               createAuction={this.createAuction}
               bid={this.bid}
-              deleteProduct={this.deleteProduct}s
+              deleteProduct={this.deleteProduct}
             />
           </Route>
           <Route exact path="/about">
@@ -226,6 +235,7 @@ class App extends Component {
             <Main
               admin={this.state.admin}
               productCount={this.state.productCount}
+              productsOnAuction={this.state.productsOnAuction}
               products={this.state.products}
               auctions={this.state.auctions}
               createAuction={this.createAuction}

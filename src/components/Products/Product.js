@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./App.css";
-export default function Product({ image_hash, name, id_product, artist_name, category, auction_started, auction_ended}) {
+import "../App.css";
+export default function Product({ image_hash, name, id_product, artist_name, category, auction_started, purchased}) {
   return (
     <article className="product">
-      {!auction_ended ? (
+      {!purchased ? (
         <section>
 {auction_started ? (
         <div className="product">

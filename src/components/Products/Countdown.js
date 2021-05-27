@@ -1,13 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-/**
- * Note :
- * If you're using react v 15.4 or less
- * You can directly import PropTypes from react instead.
- * Refer to this : https://reactjs.org/warnings/dont-call-proptypes.html
- */
-
 class Countdown extends Component {
   constructor(props) {
     super(props);
@@ -125,7 +118,7 @@ Countdown.propTypes = {
 };
 
 Countdown.defaultProps = {
-  date: new Date(),
+  date: new Date()
 };
 
 export default Countdown;

@@ -1,6 +1,12 @@
 import React, { Component } from "react";
+import { useParams, Link, useHistory } from "react-router-dom";
 
 class AddProduct extends Component {
+  // routeChange = () => {
+  //   let path = "/product/:id_product";
+  //   let history = useHistory();
+  //   history.push(path);
+  // };
   render() {
     if (this.props.owner === this.props.account) {
       return (
@@ -25,13 +31,14 @@ class AddProduct extends Component {
                 category,
                 description
               );
-              
+              // this.routeChange()
+              // this.props.history.push('/')
             }}
           >
-            <fieldset class="form-group">
+            <fieldset className="form-group">
               <div className="form-group row">
-                <label class="col-sm-2 col-form-label">Product name</label>
-                <div class="col-sm-10">
+                <label className="col-sm-2 col-form-label">Product name</label>
+                <div className="col-sm-10">
                   <input
                     id="productName"
                     type="text"
@@ -45,8 +52,8 @@ class AddProduct extends Component {
                 </div>
               </div>
               <div className="form-group row">
-                <label class="col-sm-2 col-form-label">Product price</label>
-                <div class="col-sm-10">
+                <label className="col-sm-2 col-form-label">Product price</label>
+                <div className="col-sm-10">
                   <input
                     id="productPrice"
                     type="text"
@@ -57,7 +64,7 @@ class AddProduct extends Component {
                     placeholder="Product Price"
                     required
                   />
-                  <small class="form-text text-muted">
+                  <small className="form-text text-muted">
                     Price should be in ethers.
                   </small>
                 </div>
@@ -126,8 +133,7 @@ class AddProduct extends Component {
           </form>
         </div>
       );
-    }
-    else{
+    } else {
       return <div>You have to be logged in as an owner to add a product</div>;
     }
   }

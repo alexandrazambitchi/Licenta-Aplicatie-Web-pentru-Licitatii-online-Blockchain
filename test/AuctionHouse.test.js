@@ -4,7 +4,7 @@ require('chai')
   .use(require('chai-as-promised'))
   .should()
 
-contract('AuctionHouse', ([deployer, seller, buyer]) =>{
+contract('AuctionHouse', ([deployer, seller, buyer, account1, account2]) =>{
 	let auctionHouse
 
 	before(async () => {
@@ -33,7 +33,7 @@ contract('AuctionHouse', ([deployer, seller, buyer]) =>{
 	})
 
 	describe('products', async () => {
-		let result, productCount, new_auction, auctionCount, bid
+		let result, productCount, new_auction, auctionCount, bid, ended
 
 		before(async () => {
 			// this.enableTimeouts(false)
@@ -42,11 +42,10 @@ contract('AuctionHouse', ([deployer, seller, buyer]) =>{
 			productCount = await auctionHouse.productCount()
 			new_auction = await auctionHouse.createAuction(productCount, { from: deployer})
 			auctionCount = await auctionHouse.auctionCount()
-			activeAuctionCount = await auctionHouse.activeAuctionCount()
+			// activeAuctionCount = await auctionHouse.activeAuctionCount()
 			bid = await auctionHouse.bid(auctionCount, web3.utils.toWei('2', 'Ether'), productCount, { from: buyer})
-			deletes = await auctionHouse.deleteProduct(productCount)
-			
-			// ended = await auctionHouse.auctionEnd(auctionCount)
+			ended = await auctionHouse.auctionEnd(auctionCount)
+			// deletes = await auctionHouse.deleteProduct(productCount)
 		})
 
 
@@ -78,7 +77,7 @@ contract('AuctionHouse', ([deployer, seller, buyer]) =>{
 			assert.equal(auctionCount, 1)
 		    const event = new_auction.logs[0].args
 		    assert.equal(event.id_auction.toNumber(), auctionCount.toNumber(), 'id is correct')
-		    assert.equal(activeAuctionCount.toNumber(), '1', 'id is correct')
+		    // assert.equal(activeAuctionCount.toNumber(), '1', 'id is correct')
 		    assert.equal(event.highestBidder, 0, 'highest bidder is correct')
 		    assert.equal(event.highestBid, '1000000000000000000', 'highestBid is correct')
 		    assert.equal(event.offerCount, '0', 'client count is correct')
@@ -114,21 +113,46 @@ contract('AuctionHouse', ([deployer, seller, buyer]) =>{
 		// 	assert.equal(product.purchased, false, 'Purchased is correct')
 		// })
 
-		it('deletes', async () => {
-			// Success
-			assert.equal(productCount, 1)
-		    const event = deletes.logs[0].args
-		    assert.equal(event.id_product.toNumber(), productCount.toNumber(), 'id is correct')
-		    assert.equal(event.name, 'Picture1', 'name is correct')
-		    assert.equal(event.price, '1000000000000000000', 'price is correct')
-		    assert.equal(event.artist_name, 'John Doe', 'Artist name is correct')
-		    assert.equal(event.category, 'painting', 'Type is correct')
-		    assert.equal(event.description, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Description is correct')
-		    assert.equal(event.image_hash, 'hash123', 'Image is correct')
-			assert.equal(event.purchased, true, 'Purchased is correct')
-			assert.equal(event.auction_ended, true, 'Auction ended is correct')
+		it('ends', async () => {
+			let oldSellerBalance
+      		oldSellerBalance = await web3.eth.getBalance(deployer)
+      		oldSellerBalance = new web3.utils.BN(oldSellerBalance)
 
-		})
+ 			const event = ended.logs[0].args
+ 			assert.equal(event.winner, buyer, 'winner is correct')
+ 			assert.equal(event.amount, '2000000000000000000', 'amount is correct')
+
+ 			let newSellerBalance
+      		newSellerBalance = await web3.eth.getBalance(deployer)
+      		newSellerBalance = new web3.utils.BN(newSellerBalance)
+
+      		let price
+      		price = web3.utils.toWei('2', 'Ether')
+      		price = new web3.utils.BN(price)
+
+      		const exepectedBalance = newSellerBalance.add(price)
+
+      		assert.equal(newSellerBalance.toString(), exepectedBalance.toString(), "Idk")
+
+ 			await await auctionHouse.auctionEnd('').should.be.rejected;
+ 		})
+
+
+		// it('deletes', async () => {
+		// 	// Success
+		// 	assert.equal(productCount, 1)
+		//     const event = deletes.logs[0].args
+		//     assert.equal(event.id_product.toNumber(), productCount.toNumber(), 'id is correct')
+		//     assert.equal(event.name, 'Picture1', 'name is correct')
+		//     assert.equal(event.price, '1000000000000000000', 'price is correct')
+		//     assert.equal(event.artist_name, 'John Doe', 'Artist name is correct')
+		//     assert.equal(event.category, 'painting', 'Type is correct')
+		//     assert.equal(event.description, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Description is correct')
+		//     assert.equal(event.image_hash, 'hash123', 'Image is correct')
+		// 	assert.equal(event.purchased, true, 'Purchased is correct')
+		// 	assert.equal(event.auction_ended, true, 'Auction ended is correct')
+
+		// })
 
 	})
 

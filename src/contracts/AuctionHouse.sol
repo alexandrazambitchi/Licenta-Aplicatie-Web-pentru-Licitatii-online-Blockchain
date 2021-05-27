@@ -11,7 +11,7 @@ contract AuctionHouse {
     address payable public owner;
 	uint public productCount = 0;
     uint public auctionCount = 0;
-    uint public activeAuctionCount = 0;
+    uint public productsOnAuction = 0;
 	mapping(uint => Product) public products;
     mapping(uint => Auction) public auctionList;
 
@@ -25,12 +25,12 @@ contract AuctionHouse {
         string image_hash;
         bool purchased;
         bool auction_started;
-        bool auction_ended;
+        uint id_auction;
     }
 
     struct Auction{
         uint id_auction;
-        uint auctionEndTime;
+        // uint auctionEndTime;
         address highestBidder;
         uint highestBid;
         uint offerCount;
@@ -59,13 +59,12 @@ contract AuctionHouse {
         string category,
         string description,
         string image_hash,
-        bool purchased,
-        bool auction_ended
+        bool purchased
     );
 
     event AuctionCreated(
         uint id_auction,
-        uint auctionEndTime,
+        // uint auctionEndTime,
         address highestBidder,
         uint highestBid,
         uint offerCount,
@@ -75,7 +74,7 @@ contract AuctionHouse {
 
     event AuctionUpdated(
         uint id_auction,
-        uint auctionEndTime,
+        // uint auctionEndTime,
         address highestBidder,
         uint highestBid,
         uint offerCount,
@@ -108,7 +107,8 @@ contract AuctionHouse {
         require(bytes(_description).length > 0);
         require(bytes(_imageHash).length > 0);
 		productCount++;
-        products[productCount] = Product(productCount, _name, _price, _artist, _category, _description, _imageHash, false, false, false);
+        productsOnAuction++;
+        products[productCount] = Product(productCount, _name, _price, _artist, _category, _description, _imageHash, false, false, 0);
 		emit ProductCreated(productCount, _name, _price, _artist, _category, _description, _imageHash, false, false);
 	}
 
@@ -117,12 +117,12 @@ contract AuctionHouse {
         require(_product.id_product > 0 && _product.id_product <= productCount);
         require(msg.sender == owner);
         _product.auction_started = true;
-        products[_id] = _product;
         auctionCount++;
-        activeAuctionCount++;
-        uint endTime = now + 1 hours;
-        auctionList[auctionCount] = Auction(auctionCount, endTime, address(0), _product.price, 0, false, _product.id_product);
-        emit AuctionCreated(auctionCount, endTime, address(0), _product.price, 0, false, _product.id_product);
+        _product.id_auction = auctionCount;
+        // uint endTime = now + 10 minutes;
+        products[_id] = _product;
+        auctionList[auctionCount] = Auction(auctionCount, address(0), _product.price, 0, false, _product.id_product);
+        emit AuctionCreated(auctionCount, address(0), _product.price, 0, false, _product.id_product);
     }
 
     function bid(uint auction_id, uint bid_value, uint product_id) public payable {
@@ -130,7 +130,7 @@ contract AuctionHouse {
         require(_product.id_product > 0 && _product.id_product <= productCount, "Product not found");
         Auction storage _auction = auctionList[auction_id];
         require(_auction.id_auction > 0 && _auction.id_auction <= auctionCount, "Auction not found");
-        require(block.timestamp <= _auction.auctionEndTime, "Auction ended");
+        // require(block.timestamp <= _auction.auctionEndTime, "Auction ended");
         require(bid_value > _auction.highestBid, "Value too little");
         require(msg.sender != owner, "Owner!!!");
         if (_auction.highestBid != _product.price){
@@ -141,7 +141,7 @@ contract AuctionHouse {
         _auction.highestBid = bid_value;
         // _auction.clientNames[_auction.highestBidder] = clientName;
         auctionList[auction_id] = _auction;
-        emit AuctionUpdated(auction_id, _auction.auctionEndTime, msg.sender, bid_value, _auction.offerCount, _auction.ended, product_id);
+        emit AuctionUpdated(auction_id, msg.sender, bid_value, _auction.offerCount, _auction.ended, product_id);
         emit HighestBidIncreased(msg.sender, bid_value);
     }
 
@@ -149,17 +149,16 @@ contract AuctionHouse {
         Product storage _product = products[_id_product];
         require(_product.id_product > 0 && _product.id_product <= productCount, "Product not found");
         _product.purchased = true;
-        _product.auction_ended = true;
         products[_id_product] = _product;
-        emit ProductSold(_product.id_product, _product.name, _product.price, _product.artist_name, _product.category, _product.description, _product.image_hash, _product.purchased, _product.auction_ended);
+        productsOnAuction--;
+        emit ProductSold(_product.id_product, _product.name, _product.price, _product.artist_name, _product.category, _product.description, _product.image_hash, _product.purchased);
     }
 
-    function auctionEnd(uint _id_auction) public {
-        Auction storage _auction = auctionList[_id_auction];
-        require(_auction.id_auction > 0 && _auction.id_auction <= auctionCount);
-        activeAuctionCount--;
 
-        require(block.timestamp >= _auction.auctionEndTime, "Auction not yet ended.");
+    function auctionEnd(uint _id) public {
+        Auction storage _auction = auctionList[_id];
+        require(_auction.id_auction > 0 && _auction.id_auction <= auctionCount);
+
         require(!_auction.ended, "auctionEnd has already been called.");
 
         Product storage _product = products[_auction.id_product];
@@ -174,18 +173,23 @@ contract AuctionHouse {
         }
         
         _auction.ended = true;
-        auctionList[_id_auction] = _auction;
+        auctionList[_id] = _auction;
 
-        _product.auction_ended = true;
         products[_auction.id_product] = _product;
-
+        uint bid_value = _auction.highestBid;
         require (_auction.highestBidder != address(0), "No one bid at this auction");
+        // if(_auction.highestBidder != owner){
+        (bool success, )= address(owner).call.value(bid_value)("");
+        require (success, "transfer failed");
+            // address(owner).transfer(_auction.highestBid);
+            // owner.call.value(_auction.highestBid)("");
+        // }
 
+        
+        
         emit AuctionEnded(_auction.highestBidder, _auction.highestBid);
-        emit ProductSold(_product.id_product, _product.name, _product.price, _product.artist_name, _product.category, _product.description, _product.image_hash, _product.purchased, _product.auction_ended);
+        // emit ProductSold(_product.id_product, _product.name, _product.price, _product.artist_name, _product.category, _product.description, _product.image_hash, _product.purchased);
 
-        if(_auction.highestBidder != owner)
-            owner.transfer(_auction.highestBid);
     }
     
     

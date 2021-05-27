@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./App.css";
+import "../App.css";
+
 export default function Product({
   image_hash,
   name,
@@ -8,11 +9,11 @@ export default function Product({
   artist_name,
   category,
   auction_started,
-  auction_ended
+  purchased
 }) {
   return (
     <article className="product">
-      {!auction_ended ? (
+      {!purchased ? (
         <section>
           {!auction_started ? (
             <div className="product">
