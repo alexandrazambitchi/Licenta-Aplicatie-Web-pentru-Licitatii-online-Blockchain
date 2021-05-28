@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import history from "./History";
 import Web3 from "web3";
 import "./App.css";
 import AuctionHouse from "../abis/AuctionHouse.json";
@@ -9,7 +10,7 @@ import Info from "./pages/Info";
 import Error from "./pages/Error";
 import ProductPage from "./Products/ProductPage";
 import AddProduct from "./Products/AddProduct";
-import Main from "./MainPage/Main";
+import ProductList from "./MainPage/ProductList";
 import ProductListSoonOnAuction from "./Products/ProductListSoonOnAuction";
 
 const ipfsClient = require("ipfs-api");
@@ -20,7 +21,12 @@ const ipfs = ipfsClient({
 });
 
 class App extends Component {
-  async componentWillMount() {
+  async componenWillMount() {
+    await this.loadWeb3();
+    await this.loadBlockchainData();
+  }
+
+  async componentDidMount() {
     await this.loadWeb3();
     await this.loadBlockchainData();
   }
@@ -164,9 +170,15 @@ class App extends Component {
     this.state.auctionHouse.methods
       .auctionEnd(id)
       .send({ from: this.state.account })
-      .once("receipt", (receipt) => {
-        this.setState({ loading: false });
-      });
+      .once(
+        "receipt",
+        (receipt) => {
+          this.setState({ loading: false });
+        },
+        (error) => {
+          console.log("Error");
+        }
+      );
   }
 
   deleteProduct(id_product) {
@@ -181,7 +193,7 @@ class App extends Component {
 
   render() {
     return (
-      <Router>
+      <Router history={history}>
         <Navbar account={this.state.account} admin={this.state.admin} />
         <Switch>
           <Route exact path="/">
@@ -232,7 +244,7 @@ class App extends Component {
             />
           </Route>
           <Route exact path="/activeauction">
-            <Main
+            <ProductList
               admin={this.state.admin}
               productCount={this.state.productCount}
               productsOnAuction={this.state.productsOnAuction}

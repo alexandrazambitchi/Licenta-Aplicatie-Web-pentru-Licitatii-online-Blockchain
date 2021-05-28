@@ -1,8 +1,8 @@
 import React from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import "../App.css";
-import { format } from "date-fns"
-import Countdown from "../Products/Countdown"
+// import { format } from "date-fns"
+// import Countdown from "../Products/Countdown"
 
 // import {auctionEnd} from "../App"
 export default function Auction({

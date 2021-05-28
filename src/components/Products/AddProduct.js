@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { useParams, Link, useHistory } from "react-router-dom";
+import { useParams, Link, useHistory, withRouter } from "react-router-dom";
+import history from "../History";
 
 class AddProduct extends Component {
   // routeChange = () => {
@@ -32,11 +33,12 @@ class AddProduct extends Component {
                 description
               );
               // this.routeChange()
-              // this.props.history.push('/')
+              // history.push("/");
+              // window.location.href = "/"
             }}
           >
             <fieldset className="form-group">
-              <div className="form-group row">
+              <div className="form-group">
                 <label className="col-sm-2 col-form-label">Product name</label>
                 <div className="col-sm-10">
                   <input
@@ -51,7 +53,7 @@ class AddProduct extends Component {
                   />
                 </div>
               </div>
-              <div className="form-group row">
+              <div className="form-group">
                 <label className="col-sm-2 col-form-label">Product price</label>
                 <div className="col-sm-10">
                   <input
@@ -69,51 +71,67 @@ class AddProduct extends Component {
                   </small>
                 </div>
               </div>
-              <div className="form-group row mr-sm-2">
-                <input
-                  id="productArtist"
-                  type="text"
-                  ref={(input) => {
-                    this.productArtist = input;
-                  }}
-                  className="form-control"
-                  placeholder="Product Artist Name"
-                  required
-                />
+              <div className="form-group">
+                <label className="col-sm-2 col-form-label">
+                  Product Artist Name
+                </label>
+                <div className="col-sm-10">
+                  <input
+                    id="productArtist"
+                    type="text"
+                    ref={(input) => {
+                      this.productArtist = input;
+                    }}
+                    className="form-control"
+                    placeholder="Product Artist Name"
+                    required
+                  />
+                </div>
               </div>
-              <div className="form-group mr-sm-2">
-                <input
-                  id="productCategory"
-                  type="text"
-                  ref={(input) => {
-                    this.productCategory = input;
-                  }}
-                  className="form-control"
-                  placeholder="Product Category"
-                  required
-                />
+              <div className="form-group">
+                <label className="form-label mt-4">Category</label>
+                <div className="col-sm-10">
+                  <select
+                    className="form-select"
+                    ref={(option) => {
+                      this.productCategory = option;
+                    }}
+                    required
+                  >
+                    <option>Painting</option>
+                    <option>Sculpture</option>
+                    <option>Other</option>
+                  </select>
+                </div>
               </div>
-              <div className="form-group mr-sm-2">
-                <input
-                  id="productDescription"
-                  type="text"
-                  ref={(input) => {
-                    this.productDescription = input;
-                  }}
-                  className="form-control"
-                  placeholder="Product Description"
-                  required
-                />
+              <div className="form-group">
+                <label className="col-sm-2 col-form-label">Description</label>
+                <div className="col-sm-10">
+                  <textarea
+                    id="productDescription"
+                    type="text"
+                    rows="3"
+                    ref={(input) => {
+                      this.productDescription = input;
+                    }}
+                    className="form-control"
+                    placeholder="Product Description"
+                    required
+                  />
+                </div>
               </div>
-              <div className="form-group mr-sm-2">
+              <div class="form-group">
+                <label for="formFile" class="form-label mt-4">
+                  Image file
+                </label>
                 <input
+                  class="form-control"
                   type="file"
                   accept=".jpg, .jpeg, .png, .bmp"
                   onChange={this.props.captureFile}
-                  placeholder="Product Image"
+                  required
                 />
               </div>
-
               {/* <div className="form-group mr-sm-2">
               <input
                 id="imageFile"
@@ -126,8 +144,15 @@ class AddProduct extends Component {
                 required
               />
             </div> */}
-              <button type="submit" className="btn btn-primary">
+              
+              <button
+                type="submit"
+                className="btn btn-primary"
+                onClick={history.push("/")}
+              >
+                {/* <Link to="/" className="btn btn-primary"> */}
                 Add Product
+                {/* </Link> */}
               </button>
             </fieldset>
           </form>

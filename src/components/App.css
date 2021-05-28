@@ -1,0 +1,40 @@
+.section {
+  padding: 10px;
+}
+
+.admin_buttons {
+  display: inline;
+}
+
+.d-flex div{
+  padding: 1rem;
+  border: 2px solid #fff;
+  text-align: center;
+  /* align-items: center; */
+  align-content: stretch;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.product {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  border-radius: var(--mainBorderRadius);
+}
+
+.product-center{
+  /* display: grid;
+  row-gap: 5px;
+  column-gap: 5px; */
+  width: var(--smallWidth);
+  margin: 0 auto;
+  max-width: var(--fullWidth);
+  display: grid;
+  row-gap: 2rem;
+  column-gap: 2rem;
+}
+
+.image-product{
+  max-width: 420px;
+  max-height: auto;
+}

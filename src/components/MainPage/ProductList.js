@@ -1,9 +1,12 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import { Link } from "react-router-dom";
-import ProductSoon from "./ProductSoon";
-import "../App.css";
+// import AddProduct from '../Products/AddProduct';
+import Product from '../Products/Product';
+// import ProductSoon from "../Products/ProductSoon";
+// import "../App.css";
+// import ProductListSoonOnAuction from '../Products/ProductListSoonOnAuction';
 
-class ProductListSoonOnAuction extends Component {
+class ProductList extends Component {
   render() {
     return (
       <div className="p-2 flex-grow-1 bd-highlight">
@@ -15,10 +18,10 @@ class ProductListSoonOnAuction extends Component {
           ) : (
             <section className="section">
               <h2 className="section-title">Products</h2>
-              <h3 className="section-title">Soon on auction</h3>
+              <h3 className="section-title">Active auctions</h3>
               <div className="product-center">
                 {this.props.products.map((product, key) => {
-                  return <ProductSoon key={key} {...product} />;
+                  return <Product key={key} {...product} text={"More"} />;
                 })}
               </div>
             </section>
@@ -29,4 +32,4 @@ class ProductListSoonOnAuction extends Component {
   }
 }
 
-export default ProductListSoonOnAuction;
+export default ProductList;
