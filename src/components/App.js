@@ -24,9 +24,11 @@ class App extends Component {
   async componenWillMount() {
     await this.loadWeb3();
     await this.loadBlockchainData();
+    // location.reload(false);
   }
 
   async componentDidMount() {
+    // window.location.reload(false);
     await this.loadWeb3();
     await this.loadBlockchainData();
   }
@@ -59,11 +61,14 @@ class App extends Component {
       const productCount = await auctionHouse.methods.productCount().call();
       const auctionCount = await auctionHouse.methods.auctionCount().call();
       const productsOnAuction = await auctionHouse.methods.productsOnAuction().call();
+      const activeAuction = await auctionHouse.methods.activeAuction().call();
       const owner = await auctionHouse.methods.owner().call();
       this.setState({ productCount });
       this.setState({ auctionCount });
       this.setState({ productsOnAuction });
+      this.setState({ activeAuction });
       this.setState({ owner });
+      
       for (var i = 1; i <= productCount; i++) {
         const product = await auctionHouse.methods.products(i).call();
         this.setState({
@@ -94,6 +99,7 @@ class App extends Component {
       productCount: 0,
       auctionCount: 0,
       productsOnAuction: 0,
+      activeAuction: 0,
       owner: "",
       products: [],
       auctions: [],
@@ -174,9 +180,6 @@ class App extends Component {
         "receipt",
         (receipt) => {
           this.setState({ loading: false });
-        },
-        (error) => {
-          console.log("Error");
         }
       );
   }
@@ -205,6 +208,7 @@ class App extends Component {
               auctions={this.state.auctions}
               productCount={this.state.productCount}
               productsOnAuction={this.state.productsOnAuction}
+              activeAuction={this.state.activeAuction}
               createProduct={this.createProduct}
               createAuction={this.createAuction}
               bid={this.bid}
@@ -218,6 +222,7 @@ class App extends Component {
               admin={this.state.admin}
               productCount={this.state.productCount}
               productsOnAuction={this.state.productsOnAuction}
+              activeAuction={this.state.activeAuction}
               products={this.state.products}
               auctions={this.state.auctions}
               createAuction={this.createAuction}
@@ -250,6 +255,7 @@ class App extends Component {
               productsOnAuction={this.state.productsOnAuction}
               products={this.state.products}
               auctions={this.state.auctions}
+              activeAuction={this.state.activeAuction}
               createAuction={this.createAuction}
               bid={this.bid}
               deleteProduct={this.deleteProduct}
@@ -263,6 +269,7 @@ class App extends Component {
               createAuction={this.createAuction}
               bid={this.bid}
               auctions={this.state.auctions}
+              activeAuction={this.state.activeAuction}
               account={this.state.account}
               auctionEnd={this.auctionEnd}
               deleteProduct={this.deleteProduct}

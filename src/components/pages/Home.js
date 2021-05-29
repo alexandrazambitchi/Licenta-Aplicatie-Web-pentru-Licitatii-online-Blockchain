@@ -39,6 +39,7 @@ class Home extends Component {
                 createAuction={this.createAuction}
                 bid={this.bid}
                 productsOnAuction={this.props.productsOnAuction}
+                activeAuction={this.props.activeAuction}
               />
               <ProductListSoonOnAuction
                 admin={this.props.admin}
@@ -49,6 +50,7 @@ class Home extends Component {
                 createAuction={this.createAuction}
                 bid={this.bid}
                 deleteProduct={this.deleteProduct}
+                activeAuction={this.props.activeAuction}
               />
             </div>
           </div>

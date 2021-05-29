@@ -15,8 +15,14 @@ class ProductList extends Component {
 
         {/* <h2>Product List</h2> */}
         {/* <section className="section"> */}
-        {this.props.productsOnAuction < 1 ? (
-          <h2 className="section-title">No results</h2>
+        {console.log("prodlist", this.props.activeAuction)}
+        {this.props.activeAuction < 1 ? (
+          <div className="d-flex">
+            <div>
+              <h2 className="section-title">Active auctions</h2>
+              <h3 className="section-title">No results</h3>
+            </div>
+          </div>
         ) : (
           <div className="d-flex">
             <div className="product-center">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import AdminControls from "../ProductPage/AdminControls";
 import AuctionControls from "../ProductPage/AuctionControls";
@@ -28,7 +28,18 @@ import Product from "./Product"
 
 
 const ProductPage = (props) => {
-
+  const [auctionTimer, setAuction] = useState(0)
+  console.log(auctionTimer)
+  useEffect(() => {
+    let endDate = new Date(auctionTimer.auctionEndTime * 1000);
+    console.log("date", endDate)
+    console.log("props", props)
+    let timer1 = setTimeout(() => props.auctionEnd(auctionTimer.id_auction), 3600000);
+    console.log("timer", timer1*1000)
+    return () => {
+      clearTimeout(timer1);
+    };
+  }, [auctionTimer]);
   
   const params = useParams();
   console.log(params);
@@ -68,15 +79,17 @@ const ProductPage = (props) => {
                           >
                             Delete product
                           </button>
-                          <button
-                            className="btn btn-primary"
-                            name={product.id_product}
-                            onClick={(event) => {
-                              props.auctionEnd(product.id_auction);
-                            }}
-                          >
-                            End Auction
-                          </button>
+                          {!product.purchased ? (
+                            <button
+                              className="btn btn-primary"
+                              name={product.id_product}
+                              onClick={(event) => {
+                                props.auctionEnd(product.id_auction);
+                              }}
+                            >
+                              End Auction
+                            </button>
+                          ) : null}
                         </div>
                       ) : null}
                     </div>
@@ -92,6 +105,7 @@ const ProductPage = (props) => {
                         <div className="p-2">
                           {auction.id_product === params.id_product ? (
                             <div>
+                              {auctionTimer===0 ? (setAuction(auction)) : null}
                               <p>Auction started</p>
                               <p>You can place your offer</p>
                               <p>
@@ -102,7 +116,7 @@ const ProductPage = (props) => {
                                 )}{" "}
                                 Eth
                               </p>
-                              {!product.auction_ended ? (
+                              {!auction.ended ? (
                                 <section>
                                   {!props.admin ? (
                                     <form
@@ -150,7 +164,7 @@ const ProductPage = (props) => {
                                   ) : null}
                                 </section>
                               ) : (
-                                <p>Auction ended</p>
+                                <h1>Auction ended</h1>
                               )}
                               <section>
                                 <h2 className="section-title">Details:</h2>
@@ -163,6 +177,11 @@ const ProductPage = (props) => {
                                                   auction.id_auction
                                                 )
                                               : null} */}
+                                {console.log(
+                                  auction.ended,
+                                  product.purchased,
+                                  auction.highestBid
+                                )}
                                 <Auction key={key} {...auction} />
                               </section>
                             </div>
