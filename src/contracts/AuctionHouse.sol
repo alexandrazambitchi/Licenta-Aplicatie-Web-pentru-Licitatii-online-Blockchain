@@ -1,5 +1,5 @@
-pragma solidity ^0.5.0;
-// pragma solidity >=0.7.0 <0.9.0;
+// pragma solidity ^0.5.0;
+pragma solidity >=0.5.0 <0.9.0;
 
 /**
  * The AuctionHouse
@@ -31,7 +31,7 @@ contract AuctionHouse {
     struct Auction{
         uint id_auction;
         // uint auctionEndTime;
-        address highestBidder;
+        address payable highestBidder;
         uint highestBid;
         uint offerCount;
         bool ended;
@@ -65,7 +65,7 @@ contract AuctionHouse {
     event AuctionCreated(
         uint id_auction,
         // uint auctionEndTime,
-        address highestBidder,
+        address payable highestBidder,
         uint highestBid,
         uint offerCount,
         bool ended,
@@ -75,7 +75,7 @@ contract AuctionHouse {
     event AuctionUpdated(
         uint id_auction,
         // uint auctionEndTime,
-        address highestBidder,
+        address payable highestBidder,
         uint highestBid,
         uint offerCount,
         bool ended,
@@ -83,12 +83,12 @@ contract AuctionHouse {
     );
 
     event HighestBidIncreased(
-        address bidder, 
+        address payable bidder, 
         uint amount
     );
 
     event AuctionEnded(
-        address winner, 
+        address payable winner, 
         uint amount
     );
     
@@ -155,7 +155,8 @@ contract AuctionHouse {
     }
 
 
-    function auctionEnd(uint _id) public {
+    function auctionEnd(uint _id) public payable {
+
         Auction storage _auction = auctionList[_id];
         require(_auction.id_auction > 0 && _auction.id_auction <= auctionCount);
 
@@ -173,20 +174,20 @@ contract AuctionHouse {
         }
         
         _auction.ended = true;
-        auctionList[_id] = _auction;
 
-        products[_auction.id_product] = _product;
         uint bid_value = _auction.highestBid;
+        address payable localOwner = _auction.highestBidder;
         require (_auction.highestBidder != address(0), "No one bid at this auction");
         // if(_auction.highestBidder != owner){
-        (bool success, )= address(owner).call.value(bid_value)("");
-        require (success, "transfer failed");
+        (bool success)= address(localOwner).send(bid_value);
+        // address(localOwner).transfer(_auction.highestBid);
+        // require (success, "transfer failed");
             // address(owner).transfer(_auction.highestBid);
+            // address(_auction.highestBidder).call.value(bid_value)("")
             // owner.call.value(_auction.highestBid)("");
         // }
-
-        
-        
+        auctionList[_id] = _auction;
+        products[_auction.id_product] = _product;
         emit AuctionEnded(_auction.highestBidder, _auction.highestBid);
         // emit ProductSold(_product.id_product, _product.name, _product.price, _product.artist_name, _product.category, _product.description, _product.image_hash, _product.purchased);
 

@@ -44,7 +44,6 @@ contract('AuctionHouse', ([deployer, seller, buyer, account1, account2]) =>{
 			auctionCount = await auctionHouse.auctionCount()
 			// activeAuctionCount = await auctionHouse.activeAuctionCount()
 			bid = await auctionHouse.bid(auctionCount, web3.utils.toWei('2', 'Ether'), productCount, { from: buyer})
-			ended = await auctionHouse.auctionEnd(auctionCount)
 			// deletes = await auctionHouse.deleteProduct(productCount)
 		})
 
@@ -114,25 +113,26 @@ contract('AuctionHouse', ([deployer, seller, buyer, account1, account2]) =>{
 		// })
 
 		it('ends', async () => {
-			let oldSellerBalance
-      		oldSellerBalance = await web3.eth.getBalance(deployer)
-      		oldSellerBalance = new web3.utils.BN(oldSellerBalance)
+			let initialOwnerBalance
+      		initialOwnerBalance = await web3.eth.getBalance(buyer)
+      		initialOwnerBalance = new web3.utils.BN(initialOwnerBalance)
 
+      		ended = await auctionHouse.auctionEnd(auctionCount, {from: buyer, value: web3.utils.toWei('2', 'Ether')})
  			const event = ended.logs[0].args
  			assert.equal(event.winner, buyer, 'winner is correct')
  			assert.equal(event.amount, '2000000000000000000', 'amount is correct')
 
- 			let newSellerBalance
-      		newSellerBalance = await web3.eth.getBalance(deployer)
-      		newSellerBalance = new web3.utils.BN(newSellerBalance)
+ 			let newOwnerBalance
+      		newOwnerBalance = await web3.eth.getBalance(buyer)
+      		newOwnerBalance = new web3.utils.BN(newOwnerBalance)
 
       		let price
       		price = web3.utils.toWei('2', 'Ether')
       		price = new web3.utils.BN(price)
 
-      		const exepectedBalance = newSellerBalance.add(price)
+      		const exepectedBalance = initialOwnerBalance.add(price)
 
-      		assert.equal(newSellerBalance.toString(), exepectedBalance.toString(), "Idk")
+      		assert.equal(newOwnerBalance.toString(), exepectedBalance.toString(), "Idk")
 
  			await await auctionHouse.auctionEnd('').should.be.rejected;
  		})
