@@ -9,24 +9,26 @@ import Product from '../Products/Product';
 class ProductList extends Component {
   render() {
     return (
-      <div className="p-2 flex-grow-1 bd-highlight">
+      //  className="p-2 flex-grow-1 bd-highlight"
+      <div>
         <p>&nbsp;</p>
+
         {/* <h2>Product List</h2> */}
-        <section className="section">
-          {this.props.productsOnAuction < 1 ? (
-            <h2 className="section-title">No results</h2>
-          ) : (
-            <section className="section">
+        {/* <section className="section"> */}
+        {this.props.productsOnAuction < 1 ? (
+          <h2 className="section-title">No results</h2>
+        ) : (
+          <div className="d-flex">
+            <div className="product-center">
               <h2 className="section-title">Products</h2>
               <h3 className="section-title">Active auctions</h3>
-              <div className="product-center">
-                {this.props.products.map((product, key) => {
-                  return <Product key={key} {...product} text={"More"} />;
-                })}
-              </div>
-            </section>
-          )}
-        </section>
+              {this.props.products.map((product, key) => {
+                return <Product key={key} {...product} text={"More"} />;
+              })}
+            </div>
+          </div>
+        )}
+        {/* </section> */}
       </div>
     );
   }

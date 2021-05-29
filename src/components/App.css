@@ -7,13 +7,48 @@
 }
 
 .d-flex div{
+  width: 100%;
   padding: 1rem;
   border: 2px solid #fff;
   text-align: center;
-  /* align-items: center; */
+  align-items: center;
   align-content: stretch;
   justify-content: center;
   flex-direction: row;
+  display:inline-block;
+  /* flex-wrap: wrap; */
+}
+
+.carousel-style div{
+  /* max-width: 70%; */
+  width: 90%;
+  margin: auto;
+  /* padding: 1rem; */
+  /* border: 2px solid #fff; */
+  /* text-align: center;
+  align-items: center;
+  align-content: stretch;
+  justify-content: center; */
+  /* display: ; */
+  /* flex-direction: column; */
+  /* flex-direction: row; */
+  /* display:inline-block; */
+  /* justify-content: center;
+  align-content: stretch;
+  display:flexbox; */
+  /* padding: 10px; */
+  /* position: absolute; */
+}
+
+.carousel-style Carousel.Item{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center {
+  margin: auto;
+  width: 70%;
 }
 
 .product {
@@ -23,9 +58,9 @@
 }
 
 .product-center{
-  /* display: grid;
+  display: grid;
   row-gap: 5px;
-  column-gap: 5px; */
+  column-gap: 5px;
   width: var(--smallWidth);
   margin: 0 auto;
   max-width: var(--fullWidth);

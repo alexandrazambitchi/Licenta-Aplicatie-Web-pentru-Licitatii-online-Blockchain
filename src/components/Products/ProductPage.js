@@ -18,7 +18,17 @@ import Product from "./Product"
 //   setTimeout(props.auctionEnd(id_auction), eta);
 // }
 
+
+
 const ProductPage = (props) => {
+
+  // function validateBid(value, price){
+  //   const errors=[]
+  //   if(value<=price){
+  //     errors.push("Value too little")
+  //   }
+  //   return errors;
+  // }
   const params = useParams();
   console.log(params);
   return (

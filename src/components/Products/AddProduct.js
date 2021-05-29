@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import { useParams, Link, useHistory, withRouter } from "react-router-dom";
 import history from "../History";
 
+const optionsCategory = [{value:'painting', label: 'Painting'},
+{value: 'sculpture', label: 'Sculpture'},
+{value: 'other', label: 'Other'}]
+
 class AddProduct extends Component {
   // routeChange = () => {
   //   let path = "/product/:id_product";
@@ -97,10 +101,12 @@ class AddProduct extends Component {
                       this.productCategory = option;
                     }}
                     required
+                    placeholder="Select category"
                   >
+                    <option>Select Category...</option>
                     <option>Painting</option>
                     <option>Sculpture</option>
-                    <option>Other</option>
+                    <option>Other</option> 
                   </select>
                 </div>
               </div>
@@ -148,7 +154,7 @@ class AddProduct extends Component {
               <button
                 type="submit"
                 className="btn btn-primary"
-                onClick={history.push("/")}
+                // onClick={history.push("/")}
               >
                 {/* <Link to="/" className="btn btn-primary"> */}
                 Add Product
