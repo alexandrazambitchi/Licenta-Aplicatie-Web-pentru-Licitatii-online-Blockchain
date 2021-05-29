@@ -186,7 +186,7 @@ contract AuctionHouse {
         address payable localOwner = _auction.highestBidder;
         require (_auction.highestBidder != address(0), "No one bid at this auction");
         // if(_auction.highestBidder != owner){
-        address(localOwner).transfer(bid_value);
+        address(localOwner).send(bid_value);
         // address(localOwner).transfer(_auction.highestBid);
         // require (success, "transfer failed");
             // address(owner).transfer(_auction.highestBid);

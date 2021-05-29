@@ -29,13 +29,27 @@ import Product from "./Product"
 
 const ProductPage = (props) => {
   const [auctionTimer, setAuction] = useState(0)
+  const [endTime, setEndTime] = useState(-1)
+  const [disable, setDisable] = useState(false)
+  const [endDate, setEndDate] = useState(0)
   console.log(auctionTimer)
+  // useEffect(() => {
+  //   let endDate = auctionTimer.auctionEndTime;
+  //   console.log("date", endDate)
+  //   console.log("props", props)
+  //   let timer1 = setTimeout(() => props.auctionEnd(auctionTimer.id_auction), 3600000);
+  //   console.log("timer", timer1*1000)
+  //   return () => {
+  //     clearTimeout(timer1);
+  //   };
+  // }, [auctionTimer]);
+
   useEffect(() => {
-    let endDate = new Date(auctionTimer.auctionEndTime * 1000);
-    console.log("date", endDate)
-    console.log("props", props)
-    let timer1 = setTimeout(() => props.auctionEnd(auctionTimer.id_auction), 3600000);
-    console.log("timer", timer1*1000)
+    let timer1 = setTimeout(
+      () => setDisable(true),
+      endTime - Math.floor(Date.now() / 1000)
+    );
+    console.log("timer", timer1 * 1000);
     return () => {
       clearTimeout(timer1);
     };
@@ -105,7 +119,23 @@ const ProductPage = (props) => {
                         <div className="p-2">
                           {auction.id_product === params.id_product ? (
                             <div>
-                              {auctionTimer===0 ? (setAuction(auction)) : null}
+                              {auctionTimer === 0 ? setAuction(auction) : null}
+                              {endDate === 0 ? setEndDate(new Date()) : null}
+                              {endTime === -1
+                                ? setEndTime(
+                                    // Date(auction.auctionEndTime * 1000)
+                                    auction.auctionEndTime
+                                  )
+                                : null}
+                              {/* {endTime === Math.floor(Date.now() / 1000) &&
+                              disable === false
+                                ? setDisable(true)
+                                : null} */}
+                              {console.log("endtime", endTime)}
+                              {console.log(Math.floor(Date.now() / 1000))}
+                              {console.log(auctionTimer)}
+                              {console.log(Math.floor(Date.now() / 1000) - endTime)}
+                              {console.log("disable", disable)}
                               <p>Auction started</p>
                               <p>You can place your offer</p>
                               <p>
@@ -157,6 +187,7 @@ const ProductPage = (props) => {
                                       <button
                                         type="submit"
                                         className="btn btn-primary"
+                                        disabled={disable}
                                       >
                                         Place bid
                                       </button>
