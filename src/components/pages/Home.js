@@ -4,7 +4,7 @@ import React, { Component } from "react";
 import "../App.css";
 // import AuctionHouse from "../../abis/AuctionHouse.json";
 // import Navbar from "../MainPage/Navbar";
-import ProductList from "../MainPage/ProductList";
+import ProductList from "../Products/ProductList";
 // import AddProduct from "../Products/AddProduct";
 // import { Link } from "react-router-dom";
 // import SearchForm from "../MainPage/SearchForm"

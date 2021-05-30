@@ -198,6 +198,7 @@ contract AuctionHouse {
         auctionList[_id] = _auction;
         products[_auction.id_product] = _product;
         emit AuctionEnded(_auction.highestBidder, _auction.highestBid);
+        emit AuctionUpdated(_auction.id_auction, _auction.auctionEndTime, _auction.highestBidder, _auction.highestBid, _auction.offerCount, _auction.ended, _auction.id_product);
         emit ProductSold(_product.id_product, _product.name, _product.price, _product.artist_name, _product.category, _product.description, _product.image_hash, _product.purchased, _auction.highestBid, _auction.highestBidder);
 
     }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 // import AdminControls from "../ProductPage/AdminControls";
 // import AuctionControls from "../ProductPage/AuctionControls";
 import ProductInfo from "../ProductPage/ProductInfo";
@@ -11,8 +11,9 @@ const ProductPage = (props) => {
   const [endTime, setEndTime] = useState(-1);
   const [disable, setDisable] = useState(false);
   const [endDate, setEndDate] = useState(0);
-  console.log(auctionTimer);
-  console.log("initial disable", disable);
+  const [loading, setLoading] = useState(false);
+  // console.log(auctionTimer);
+  // console.log("initial disable", disable);
 
   useEffect(() => {
     let timer1 = setTimeout(
@@ -25,10 +26,25 @@ const ProductPage = (props) => {
     };
   }, [auctionTimer]);
 
+  // useEffect(() => {
+  //   let timer2 = setTimeout(() => setLoading(false), 1000);
+  //   console.log("useefect", loading)
+  //   return () => {
+  //     clearTimeout(timer2);
+  //   };
+  // }, [loading]);
+
   const params = useParams();
-  console.log(params);
   return (
     <div id="content">
+      {/* {loading ? (
+        <div id="loader" className="text-center">
+          <p className="text-center">Loading...</p>
+        </div>
+      ) : (
+        // <p>{setLoading(false)}</p>
+        null
+      )} */}
       {props.products.map((product, key) => {
         return (
           <div>
@@ -41,15 +57,19 @@ const ProductPage = (props) => {
                     {props.admin ? (
                       <div>
                         {!product.auction_started ? (
-                          <button
-                            className="btn btn-primary"
-                            name={product.id_product}
-                            onClick={(event) => {
-                              props.createAuction(product.id_product);
-                            }}
-                          >
-                            Start Auction
-                          </button>
+                          <section>
+                            <button
+                              className="btn btn-primary"
+                              name={product.id_product}
+                              onClick={(event) => {
+                                props.createAuction(product.id_product);
+                                setLoading(true);
+                              }}
+                            >
+                              Start Auction
+                            </button>
+                            {/* <p>{!loading ? setLoading(true) : null}</p> */}
+                          </section>
                         ) : (
                           <div>Auction started</div>
                         )}
@@ -73,7 +93,10 @@ const ProductPage = (props) => {
                       Auction has not started yet! Coming soon!
                       {setDisable(false)}
                     </p>
-                  ) : <p>{disable ? setDisable(false) : null} </p>}
+                  ) : (
+                    <p>{disable ? setDisable(false) : null} </p>
+                    // null
+                  )}
                 </div>
                 <div className="p-2 flex-grow-1 bd-highlight">
                   {props.auctions.map((auction, key) => {
@@ -81,7 +104,7 @@ const ProductPage = (props) => {
                       <div className="p-2">
                         {auction.id_product === params.id_product ? (
                           <div>
-                            {auctionTimer === 0 ? setDisable(false) : null}
+                            {/* {auctionTimer === 0 ? setDisable(false) : null} */}
                             {auctionTimer === 0 ? setAuction(auction) : null}
                             {endDate === 0 ? setEndDate(new Date()) : null}
                             {endTime === -1
@@ -94,13 +117,13 @@ const ProductPage = (props) => {
                               disable === false
                                 ? setDisable(true)
                                 : null} */}
-                            {console.log("endtime", endTime)}
+                            {/* {console.log("endtime", endTime)}
                             {console.log("now", Math.floor(Date.now() / 1000))}
                             {console.log("auction timer", auctionTimer)}
                             {console.log(
                               Math.floor(Date.now() / 1000) - endTime
                             )}
-                            {console.log("disable", disable)}
+                            {console.log("disable", disable)} */}
                             <p>Auction started</p>
                             <p>You can place your offer</p>
                             <p>
@@ -160,26 +183,35 @@ const ProductPage = (props) => {
                                       type="submit"
                                       className="btn btn-primary"
                                       disabled={disable}
+                                      onClick={(event) => {
+                                        setLoading(true);
+                                        console.log(loading);
+                                      }}
                                     >
                                       Place bid
                                     </button>
+                                    {!loading ? setLoading(true) : null}
                                   </form>
                                 ) : (
                                   <div>
                                     {!product.purchased ? (
-                                      <button
-                                        className="btn btn-primary"
-                                        name={product.id_product}
-                                        onClick={(event) => {
-                                          props.auctionEnd(
-                                            product.id_auction,
-                                            auction.highestBid,
-                                            auction.highestBidder
-                                          );
-                                        }}
-                                      >
-                                        End Auction
-                                      </button>
+                                      <section>
+                                        <button
+                                          className="btn btn-primary"
+                                          name={product.id_product}
+                                          onClick={(event) => {
+                                            props.auctionEnd(
+                                              product.id_auction,
+                                              auction.highestBid,
+                                              auction.highestBidder
+                                            );
+                                            setLoading(true);
+                                          }}
+                                        >
+                                          End Auction
+                                        </button>
+                                        {/* {!loading ? setLoading(true) : null} */}
+                                      </section>
                                     ) : null}
                                   </div>
                                 )}
@@ -189,11 +221,11 @@ const ProductPage = (props) => {
                             )}
                             <section>
                               <h2 className="section-title">Details:</h2>
-                              {console.log(
+                              {/* {console.log(
                                 auction.ended,
                                 product.purchased,
                                 auction.highestBid
-                              )}
+                              )} */}
                               <Auction key={key} {...auction} />
                             </section>
                           </div>

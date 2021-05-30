@@ -10,7 +10,7 @@ import Info from "./pages/Info";
 import Error from "./pages/Error";
 import ProductPage from "./Products/ProductPage";
 import AddProduct from "./Products/AddProduct";
-import ProductList from "./MainPage/ProductList";
+import ProductList from "./Products/ProductList";
 import ProductListSoonOnAuction from "./Products/ProductListSoonOnAuction";
 
 const ipfsClient = require("ipfs-api");
@@ -227,6 +227,7 @@ class App extends Component {
               captureFile={this.captureFile}
               uploadImage={this.uploadImage}
               deleteProduct={this.deleteProduct}
+              loading={this.state.loading}
             />
           </Route>
           <Route exact path="/soonauction">
@@ -240,6 +241,7 @@ class App extends Component {
               createAuction={this.createAuction}
               bid={this.bid}
               deleteProduct={this.deleteProduct}
+              loading={this.state.loading}
             />
           </Route>
           <Route exact path="/about">
@@ -253,8 +255,7 @@ class App extends Component {
               products={this.state.products}
               auctions={this.state.auctions}
               createProduct={this.createProduct}
-              // createAuction={this.createAuction}
-              // bid={this.bid}
+              loading={this.state.loading}
               captureFile={this.captureFile}
               uploadImage={this.uploadImage}
               deleteProduct={this.deleteProduct}
@@ -271,6 +272,7 @@ class App extends Component {
               createAuction={this.createAuction}
               bid={this.bid}
               deleteProduct={this.deleteProduct}
+              loading={this.state.loading}
             />
           </Route>
           <Route exact path="/product/:id_product">
@@ -285,6 +287,7 @@ class App extends Component {
               account={this.state.account}
               auctionEnd={this.auctionEnd}
               deleteProduct={this.deleteProduct}
+              loading={this.state.loading}
             />
           </Route>
           <Route path="*">
