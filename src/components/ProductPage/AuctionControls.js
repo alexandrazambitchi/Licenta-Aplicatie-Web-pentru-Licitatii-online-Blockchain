@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { useParams, Link } from "react-router-dom";
+import React from "react";
+import { useParams } from "react-router-dom";
 import Auction from "../Products/Auction";
 
 const AuctionControls = (props) => {
@@ -8,7 +8,7 @@ const AuctionControls = (props) => {
   return (
     <section>
       {/* <p>{params.id_product}</p> */}
-      {props.products.map((product, key) => {
+      {props.products.map((product) => {
           <div>
             {product.id_product === params.id_product ? (
               <div>

@@ -171,11 +171,23 @@ class App extends Component {
       });
   }
 
-  auctionEnd(id) {
+  auctionEnd(id, valueBid, winnerAccount) {
     this.setState({ loading: true });
+    const web3 = window.web3;
+    web3.eth.sendTransaction({
+      from: winnerAccount,
+      to: this.state.account,
+      value: valueBid
+    }, function(error, result){
+      if(!error){
+        console.log(result)
+      } else{
+        console.log(error);
+      }
+    })
     this.state.auctionHouse.methods
       .auctionEnd(id)
-      .send({ from: this.state.account })
+      .send({ from: this.state.account, value: valueBid })
       .once(
         "receipt",
         (receipt) => {

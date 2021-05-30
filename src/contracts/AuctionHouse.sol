@@ -60,7 +60,9 @@ contract AuctionHouse {
         string category,
         string description,
         string image_hash,
-        bool purchased
+        bool purchased,
+        uint priceSold,
+        address payable winner
     );
 
     event AuctionCreated(
@@ -156,7 +158,7 @@ contract AuctionHouse {
         if(_product.auction_started){
             activeAuction--;
         }
-        emit ProductSold(_product.id_product, _product.name, _product.price, _product.artist_name, _product.category, _product.description, _product.image_hash, _product.purchased);
+        emit ProductSold(_product.id_product, _product.name, _product.price, _product.artist_name, _product.category, _product.description, _product.image_hash, _product.purchased, 0, address(0));
     }
 
 
@@ -164,7 +166,7 @@ contract AuctionHouse {
 
         Auction storage _auction = auctionList[_id];
         require(_auction.id_auction > 0 && _auction.id_auction <= auctionCount);
-        require(block.timestamp >= _auction.auctionEndTime, "Auction not yet ended.");
+        // require(block.timestamp >= _auction.auctionEndTime, "Auction not yet ended.");
         require(!_auction.ended, "auctionEnd has already been called.");
 
         Product storage _product = products[_auction.id_product];
@@ -184,9 +186,9 @@ contract AuctionHouse {
 
         uint bid_value = _auction.highestBid;
         address payable localOwner = _auction.highestBidder;
-        require (_auction.highestBidder != address(0), "No one bid at this auction");
+        // require (_auction.highestBidder != address(0), "No one bid at this auction");
         // if(_auction.highestBidder != owner){
-        address(localOwner).send(bid_value);
+        // address(localOwner).send(msg.value);
         // address(localOwner).transfer(_auction.highestBid);
         // require (success, "transfer failed");
             // address(owner).transfer(_auction.highestBid);
@@ -196,7 +198,7 @@ contract AuctionHouse {
         auctionList[_id] = _auction;
         products[_auction.id_product] = _product;
         emit AuctionEnded(_auction.highestBidder, _auction.highestBid);
-        emit ProductSold(_product.id_product, _product.name, _product.price, _product.artist_name, _product.category, _product.description, _product.image_hash, _product.purchased);
+        emit ProductSold(_product.id_product, _product.name, _product.price, _product.artist_name, _product.category, _product.description, _product.image_hash, _product.purchased, _auction.highestBid, _auction.highestBidder);
 
     }
     

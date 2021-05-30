@@ -1,10 +1,6 @@
 import React, { Component } from "react";
-import { useParams, Link, useHistory, withRouter } from "react-router-dom";
-import history from "../History";
-
-const optionsCategory = [{value:'painting', label: 'Painting'},
-{value: 'sculpture', label: 'Sculpture'},
-{value: 'other', label: 'Other'}]
+// import { useParams, Link, useHistory, withRouter } from "react-router-dom";
+// import history from "../History";
 
 class AddProduct extends Component {
   // routeChange = () => {
@@ -126,12 +122,12 @@ class AddProduct extends Component {
                   />
                 </div>
               </div>
-              <div class="form-group">
-                <label for="formFile" class="form-label mt-4">
+              <div className="form-group">
+                <label className="form-label mt-4">
                   Image file
                 </label>
                 <input
-                  class="form-control"
+                  className="form-control"
                   type="file"
                   accept=".jpg, .jpeg, .png, .bmp"
                   onChange={this.props.captureFile}

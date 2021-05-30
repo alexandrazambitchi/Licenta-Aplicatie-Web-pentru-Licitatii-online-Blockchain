@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import "../App.css";
 import { format } from "date-fns";
 import Countdown from "./Countdown";
@@ -19,9 +19,9 @@ export default function Auction({
       <div className="auction-footer">
         <p>Auction Ends: {format(endDate, "dd/MM/yyyy")}</p>
         {/* <p>Auction Ends: {auctionEndTime}</p> */}
-        <p>
-          Time left to place offer: <Countdown date={endDate} />{" "}
-        </p>
+        <div>
+          Time left to place offer: <Countdown date={String(endDate)} />{" "}
+        </div>
         <p>Number of offers until now: {offerCount}</p>
         <p>Highest bid: {window.web3.utils.fromWei(highestBid, "Ether")} Eth</p>
       </div>
