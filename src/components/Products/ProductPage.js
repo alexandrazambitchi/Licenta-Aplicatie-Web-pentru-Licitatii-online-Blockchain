@@ -126,7 +126,7 @@ const ProductPage = (props) => {
                           {endTime === -1
                             ? setEndTime(auctionFound.auctionEndTime)
                             : null}
-                          <p>Auction started</p>
+                          <h2>Auction started</h2>
                           <p>You can place your offer</p>
                           <p>
                             Starting price:{" "}
@@ -186,6 +186,7 @@ const ProductPage = (props) => {
                                   >
                                     Place bid
                                   </button>
+                                  <p></p>
                                   {!loading ? setLoading(true) : null}
                                 </form>
                               ) : (
@@ -197,7 +198,7 @@ const ProductPage = (props) => {
                                         name={product.id_product}
                                         onClick={(event) => {
                                           props.auctionEnd(
-                                            product.id_auction,
+                                            auctionFound.id_auction,
                                             auctionFound.highestBid,
                                             auctionFound.highestBidder
                                           );
@@ -208,24 +209,31 @@ const ProductPage = (props) => {
                                         End Auction
                                       </button>
                                     </section>
-                                  ) : (
-                                    <div>
-                                      <h1>Product sold</h1>
-                                      <p>
-                                        Sold for:{" "}
-                                        {window.web3.utils.fromWei(
-                                          auctionFound.highestBid,
-                                          "Ether"
-                                        )}{" "}
-                                        Eth
-                                      </p>
-                                    </div>
-                                  )}
+                                  ) : null}
                                 </div>
                               )}
                             </section>
                           ) : (
-                            <h1>Auction ended</h1>
+                            <div>
+                              <h1>Auction ended</h1>
+                              {console.log(auctionFound.highestBid==0)}
+                              {
+                                auctionFound.highestBid == 0 ? (
+                                <p>No one bid at this auction</p>
+                              ) : (
+                                <section>
+                                  <h3>Product sold</h3>
+                                  <p>
+                                    Sold for:{" "}
+                                    {window.web3.utils.fromWei(
+                                      auctionFound.highestBid,
+                                      "Ether"
+                                    )}{" "}
+                                    Eth
+                                  </p>
+                                </section>
+                              )}
+                            </div>
                           )}
                           <section>
                             <h2 className="section-title">Details:</h2>

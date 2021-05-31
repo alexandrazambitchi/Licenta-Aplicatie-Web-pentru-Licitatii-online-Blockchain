@@ -26,7 +26,7 @@ contract AuctionHouse {
         string image_hash;
         bool purchased;
         bool auction_started;
-        uint id_auction;
+        bool auction_ended;
     }
 
     struct Auction{
@@ -111,7 +111,7 @@ contract AuctionHouse {
         require(bytes(_imageHash).length > 0);
 		productCount++;
         productsOnAuction++;
-        products[productCount] = Product(productCount, _name, _price, _artist, _category, _description, _imageHash, false, false, 0);
+        products[productCount] = Product(productCount, _name, _price, _artist, _category, _description, _imageHash, false, false, false);
 		emit ProductCreated(productCount, _name, _price, _artist, _category, _description, _imageHash, false, false);
 	}
 
@@ -122,7 +122,6 @@ contract AuctionHouse {
         _product.auction_started = true;
         auctionCount++;
         activeAuction++;
-        _product.id_auction = auctionCount;
         uint endTime = now + 1 hours;
         products[_id] = _product;
         auctionList[auctionCount] = Auction(auctionCount, endTime, address(0), 0, 0, false, _product.id_product);
@@ -180,6 +179,7 @@ contract AuctionHouse {
             _product.purchased = true;
         }
         
+        _product.auction_ended = true;
         _auction.ended = true;
         productsOnAuction--;
         activeAuction--;

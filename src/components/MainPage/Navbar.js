@@ -35,6 +35,12 @@ class Navbar extends Component {
                 </Link>
               </li>
               <li className="nav-item">
+                <Link className="nav-link" to="/sold">
+                  Ended Auction
+                  <span className="visually-hidden">(current)</span>
+                </Link>
+              </li>
+              <li className="nav-item">
                 {this.props.admin ? (
                   <p>
                     <Link className="nav-link" to="/addproduct">

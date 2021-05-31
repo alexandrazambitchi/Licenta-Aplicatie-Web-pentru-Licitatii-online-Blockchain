@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// import { Link } from "react-router-dom";
 import ProductSoon from "./ProductSoon";
 import "../App.css";
 
@@ -15,13 +14,6 @@ class ProductListSoonOnAuction extends Component {
         ) : (
           <div id="center">
             <p>&nbsp;</p>
-
-            {/* <h2>Product List</h2> */}
-            {/* <section className="section"> */}
-            {console.log("prodlistsoon", this.props.activeAuction)}
-            {console.log("prodlistsoon2", this.props.productsOnAuction)}
-            {console.log("")}
-
             {(this.props.productsOnAuction === this.props.activeAuction) ? (
               <div className="d-flex">
                 <div>
@@ -30,7 +22,6 @@ class ProductListSoonOnAuction extends Component {
                 </div>
               </div>
             ) : (
-              // <section className="section">
               <div className="d-flex">
                 <div className="product-center">
                   <h2 className="section-title">Products</h2>
@@ -40,12 +31,9 @@ class ProductListSoonOnAuction extends Component {
                   })}
                 </div>
               </div>
-              // </section>
             )}
           </div>
         )}
-
-        {/* </section> */}
       </div>
     );
   }

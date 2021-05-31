@@ -9,35 +9,17 @@
 .d-flex div{
   width: 100%;
   padding: 5px;
-  /* border: 2px solid #fff; */
   text-align: center;
   align-items: center;
   align-content: stretch;
   justify-content: center;
   flex-direction: row;
   display:inline-block;
-  /* flex-wrap: wrap; */
 }
 
 .carousel-style div{
-  /* max-width: 70%; */
-  width: 90%;
+  width: 75%;
   margin: auto;
-  /* padding: 1rem; */
-  /* border: 2px solid #fff; */
-  /* text-align: center;
-  align-items: center;
-  align-content: stretch;
-  justify-content: center; */
-  /* display: ; */
-  /* flex-direction: column; */
-  /* flex-direction: row; */
-  /* display:inline-block; */
-  /* justify-content: center;
-  align-content: stretch;
-  display:flexbox; */
-  /* padding: 10px; */
-  /* position: absolute; */
 }
 
 .carousel-style Carousel.Item{
@@ -51,11 +33,29 @@
   width: 70%;
 }
 
-.product {
+.grid-container {
   display: grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: 70px;
+}
+
+.grid-container > div {
+  text-align: center;
+  padding: 10px 0;
+}
+
+.grid-items {
+  text-align: center;
+  width: 50%;
+  height: auto;
+}
+
+.product {
   grid-template-rows: auto 1fr;
   border-radius: var(--mainBorderRadius);
 }
+
+
 
 .product-center{
   display: grid;

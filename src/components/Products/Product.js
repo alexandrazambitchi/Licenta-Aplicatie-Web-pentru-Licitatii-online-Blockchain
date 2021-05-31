@@ -9,11 +9,12 @@ export default function Product({
   category,
   auction_started,
   purchased,
+  auction_ended,
   text
 }) {
   return (
     <article className="product">
-      {!purchased ? (
+      {!auction_ended ? (
         <section>
           {auction_started ? (
             <div>

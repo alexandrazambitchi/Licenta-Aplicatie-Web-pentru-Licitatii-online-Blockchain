@@ -12,6 +12,7 @@ import ProductPage from "./Products/ProductPage";
 import AddProduct from "./Products/AddProduct";
 import ProductList from "./Products/ProductList";
 import ProductListSoonOnAuction from "./Products/ProductListSoonOnAuction";
+import Sold from "./Products/EndedAuction"
 
 const ipfsClient = require("ipfs-api");
 const ipfs = ipfsClient({
@@ -289,19 +290,23 @@ class App extends Component {
               deleteProduct={this.deleteProduct}
               loading={this.state.loading}
             />
-            {/* <ProductPageV2
+          </Route>
+          <Route exact path="/sold">
+            <Sold
               products={this.state.products}
               admin={this.state.admin}
               auctionCount={this.state.auctionCount}
+              productCount={this.state.productCount}
+              activeAuction={this.state.activeAuction}
+              productsOnAuction={this.state.productsOnAuction}
               createAuction={this.createAuction}
               bid={this.bid}
               auctions={this.state.auctions}
-              activeAuction={this.state.activeAuction}
               account={this.state.account}
               auctionEnd={this.auctionEnd}
               deleteProduct={this.deleteProduct}
               loading={this.state.loading}
-            /> */}
+            />
           </Route>
           <Route path="*">
             <Error />
