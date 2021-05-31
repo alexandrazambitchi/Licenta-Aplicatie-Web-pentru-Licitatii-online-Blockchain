@@ -11,21 +11,18 @@ export default function Auction({
   offerCount,
   highestBid,
   id_product,
-  ended
+  ended,
 }) {
   // var date = moment({ auctionEndTime } * 1000).format("DD/MM/YYYY");
   let endDate = new Date(auctionEndTime * 1000);
   return (
     <article className="auction">
       <div className="auction-footer">
-        <p>Auction Ends: {format(endDate, "dd/MM/yyyy")}</p>
+        <p>Register bids until: {format(endDate, "dd/MM/yyyy")}</p>
         {/* <p>Auction Ends: {auctionEndTime}</p> */}
-        {!ended ? (
-          <div>
-            Time left to place offer: <Countdown date={String(endDate)} />{" "}
-          </div>
-        ) : null}
-
+        <div>
+          Time left to place offer: <Countdown date={String(endDate)} />{" "}
+        </div>
         <p>Number of offers: {offerCount}</p>
         <p>Highest bid: {window.web3.utils.fromWei(highestBid, "Ether")} Eth</p>
       </div>

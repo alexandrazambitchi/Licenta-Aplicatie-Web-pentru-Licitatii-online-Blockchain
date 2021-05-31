@@ -8,8 +8,8 @@
 
 .d-flex div{
   width: 100%;
-  padding: 1rem;
-  border: 2px solid #fff;
+  padding: 5px;
+  /* border: 2px solid #fff; */
   text-align: center;
   align-items: center;
   align-content: stretch;

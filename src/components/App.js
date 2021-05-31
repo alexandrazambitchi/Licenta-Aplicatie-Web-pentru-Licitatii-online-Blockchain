@@ -9,7 +9,6 @@ import Home from "./pages/Home";
 import Info from "./pages/Info";
 import Error from "./pages/Error";
 import ProductPage from "./Products/ProductPage";
-import ProductPageV2 from "./Products/ProductPageV2";
 import AddProduct from "./Products/AddProduct";
 import ProductList from "./Products/ProductList";
 import ProductListSoonOnAuction from "./Products/ProductListSoonOnAuction";

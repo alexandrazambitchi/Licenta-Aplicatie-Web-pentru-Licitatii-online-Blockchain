@@ -5,7 +5,7 @@ import image1 from "../images/image1.png";
 const CarouselFile = () => {
   return (
     <div>
-      <Carousel fade="true" controls="false">
+      <Carousel>
         <Carousel.Item>
           <img
             className="d-block w-100"

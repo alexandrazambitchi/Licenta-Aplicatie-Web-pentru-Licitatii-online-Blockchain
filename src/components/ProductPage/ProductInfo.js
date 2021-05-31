@@ -25,18 +25,18 @@ export default function ProductInfo({
           <span className="badge bg-secondary bg-large">Name:</span>
           {name}
         </h4>
-        <p>
-          <span className="data">Artist Name:</span>
+        <h4>
+          <span className="badge bg-secondary bg-large">Artist Name:</span>
           {artist_name}
-        </p>
-        <p>
-          <span className="data">Category:</span>
+        </h4>
+        <h4>
+          <span className="badge bg-secondary bg-large">Category:</span>
           {category}
-        </p>
-        <p>
-          <span className="data">Description:</span>
+        </h4>
+        <h4>
+          <span className="badge bg-secondary bg-large">Description:</span>
           {description}
-        </p>
+        </h4>
         <Link to="/" className="btn btn-primary">
           Back Home
         </Link>

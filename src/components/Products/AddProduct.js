@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-// import { useParams, Link, useHistory, withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 // import history from "../History";
 
 class AddProduct extends Component {
@@ -156,7 +156,7 @@ class AddProduct extends Component {
                 required
               />
             </div> */}
-
+                  <p></p>
                   <button
                     type="submit"
                     className="btn btn-primary"
@@ -166,6 +166,9 @@ class AddProduct extends Component {
                     Add Product
                     {/* </Link> */}
                   </button>
+                  <Link to="/" className="btn btn-primary">
+                    Back Home
+                  </Link>
                 </fieldset>
               </form>
             </div>
