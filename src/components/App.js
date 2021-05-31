@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import Info from "./pages/Info";
 import Error from "./pages/Error";
 import ProductPage from "./Products/ProductPage";
+import ProductPageV2 from "./Products/ProductPageV2";
 import AddProduct from "./Products/AddProduct";
 import ProductList from "./Products/ProductList";
 import ProductListSoonOnAuction from "./Products/ProductListSoonOnAuction";
@@ -289,6 +290,19 @@ class App extends Component {
               deleteProduct={this.deleteProduct}
               loading={this.state.loading}
             />
+            {/* <ProductPageV2
+              products={this.state.products}
+              admin={this.state.admin}
+              auctionCount={this.state.auctionCount}
+              createAuction={this.createAuction}
+              bid={this.bid}
+              auctions={this.state.auctions}
+              activeAuction={this.state.activeAuction}
+              account={this.state.account}
+              auctionEnd={this.auctionEnd}
+              deleteProduct={this.deleteProduct}
+              loading={this.state.loading}
+            /> */}
           </Route>
           <Route path="*">
             <Error />

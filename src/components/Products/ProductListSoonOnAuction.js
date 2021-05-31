@@ -20,7 +20,9 @@ class ProductListSoonOnAuction extends Component {
             {/* <section className="section"> */}
             {console.log("prodlistsoon", this.props.activeAuction)}
             {console.log("prodlistsoon2", this.props.productsOnAuction)}
-            {this.props.productsOnAuction < 1 ? (
+            {console.log("")}
+
+            {(this.props.productsOnAuction == this.props.activeAuction) ? (
               <div className="d-flex">
                 <div>
                   <h2 className="section-title">Soon on auction</h2>

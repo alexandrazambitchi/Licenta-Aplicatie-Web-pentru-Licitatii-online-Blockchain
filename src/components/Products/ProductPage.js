@@ -6,25 +6,84 @@ import ProductInfo from "../ProductPage/ProductInfo";
 import Auction from "../Products/Auction";
 // import Product from "./Product";
 
+// function getProduct(id){
+//   {props.products.map((product, key) => 
+//     {product.id_product=== id ? return(product) : null}
+//     )}
+// }
+
 const ProductPage = (props) => {
   const [auctionTimer, setAuction] = useState(0);
   const [endTime, setEndTime] = useState(-1);
   const [disable, setDisable] = useState(false);
   const [endDate, setEndDate] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [clicked, setClicked] = useState(false);
+  const [productFound, setProduct] = useState(null);
   // console.log(auctionTimer);
   // console.log("initial disable", disable);
 
+  
+  
   useEffect(() => {
-    let timer1 = setTimeout(
+    const timer1 = setTimeout(
       () => setDisable(true),
-      endTime - Math.floor(Date.now() / 1000)
+      endTime *1000 -Date.now()
     );
     console.log("timer", timer1 * 1000);
     return () => {
       clearTimeout(timer1);
     };
   }, [auctionTimer]);
+
+  useEffect(() => {
+    setLoading(true)
+    console.log("clicked value", clicked)
+    async function getProduct() {
+      try {
+        {
+          props.products.map((product, key) => {
+            if (product.id_product === params.id_product) {
+              {props.auctions.map((auction, key) => { 
+                if (auction.id_product === params.id_product){
+                  setAuction(auction);
+                }
+              })}
+              // prod=product
+              setProduct(product);
+              // setLoading(false);
+              console.log("loading: prod ", loading);
+              console.log(productFound);
+            }
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+  }
+  async function refresh(){
+    await getProduct();
+    setInterval(function () {
+      window.location.reload();
+    }, 60000);
+  }
+  // const timer2 = setTimeout(
+  //   () =>
+  //     function () {
+  //       window.location.reload();
+  //     },
+  //   1000
+  // );
+  // // console.log("timer", timer1 * 1000);
+  // return () => {
+  //   clearTimeout(timer2);
+  // };
+  // await getProduct();
+  refresh();
+  setClicked(false)
+  setLoading(false);
+  console.log("loading: ", loading);
+}, [clicked])
 
   // useEffect(() => {
   //   let timer2 = setTimeout(() => setLoading(false), 1000);
@@ -35,6 +94,13 @@ const ProductPage = (props) => {
   // }, [loading]);
 
   const params = useParams();
+  // if(loading) {
+  //   return (
+  //     <div id="loader" className="text-center">
+  //       <p className="text-center">Loading...</p>
+  //     </div>
+  //   );
+  // }
   return (
     <div id="content">
       {/* {loading ? (
@@ -63,7 +129,10 @@ const ProductPage = (props) => {
                               name={product.id_product}
                               onClick={(event) => {
                                 props.createAuction(product.id_product);
-                                setLoading(true);
+                                // setLoading(true);
+                                // setDisable(false);
+                                setClicked(true);
+                                console.log("clicked...", clicked)
                               }}
                             >
                               Start Auction
@@ -79,6 +148,8 @@ const ProductPage = (props) => {
                           name={product.id_product}
                           onClick={(event) => {
                             props.deleteProduct(product.id_product);
+                            setClicked(true);
+                            console.log("clicked...", clicked);
                           }}
                         >
                           Delete product
@@ -88,15 +159,13 @@ const ProductPage = (props) => {
                   </div>
                 </div>
                 <div>
-                  {!product.auction_started && disable === true ? (
+                  {!product.auction_started ? (
                     <p>
                       Auction has not started yet! Coming soon!
-                      {setDisable(false)}
+                      {/* {setDisable(false)} */}
                     </p>
-                  ) : (
-                    <p>{disable ? setDisable(false) : null} </p>
-                    // null
-                  )}
+                  ) : // <p>{disable ? setDisable(false) : null} </p>
+                  null}
                 </div>
                 <div className="p-2 flex-grow-1 bd-highlight">
                   {props.auctions.map((auction, key) => {
@@ -118,12 +187,12 @@ const ProductPage = (props) => {
                                 ? setDisable(true)
                                 : null} */}
                             {/* {console.log("endtime", endTime)}
-                            {console.log("now", Math.floor(Date.now() / 1000))}
-                            {console.log("auction timer", auctionTimer)}
-                            {console.log(
+                            {console.log("now", Math.floor(Date.now() / 1000))} */}
+                            {/* {console.log("auction timer", auctionTimer)} */}
+                            {/* {console.log(
                               Math.floor(Date.now() / 1000) - endTime
-                            )}
-                            {console.log("disable", disable)} */}
+                            )} */}
+                            {console.log("disable", disable)}
                             <p>Auction started</p>
                             <p>You can place your offer</p>
                             <p>
@@ -184,8 +253,10 @@ const ProductPage = (props) => {
                                       className="btn btn-primary"
                                       disabled={disable}
                                       onClick={(event) => {
-                                        setLoading(true);
-                                        console.log(loading);
+                                        // setLoading(true);
+                                        // console.log(loading);
+                                        setClicked(true)
+                                        console.log("clicked...", clicked);
                                       }}
                                     >
                                       Place bid
@@ -205,7 +276,9 @@ const ProductPage = (props) => {
                                               auction.highestBid,
                                               auction.highestBidder
                                             );
-                                            setLoading(true);
+                                            // setLoading(true);
+                                            setClicked(true);
+                                            console.log("clicked...", clicked);
                                           }}
                                         >
                                           End Auction
