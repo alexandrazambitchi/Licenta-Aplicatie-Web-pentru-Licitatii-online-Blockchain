@@ -18,26 +18,13 @@ class Navbar extends Component {
                 </Link>
               </li>
               <li className="nav-item">
+                <Link className="nav-link" to="/products">
+                  All products<span className="visually-hidden">(current)</span>
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link className="nav-link" to="/about">
                   About<span className="visually-hidden">(current)</span>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/activeauction">
-                  Active Auctions
-                  <span className="visually-hidden">(current)</span>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/soonauction">
-                  Soon On Auction
-                  <span className="visually-hidden">(current)</span>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/sold">
-                  Ended Auctions
-                  <span className="visually-hidden">(current)</span>
                 </Link>
               </li>
               <li className="nav-item">
@@ -45,6 +32,15 @@ class Navbar extends Component {
                   <p>
                     <Link className="nav-link" to="/addproduct">
                       Add Product
+                    </Link>
+                  </p>
+                ) : null}
+              </li>
+              <li className="nav-item">
+                {this.props.admin ? (
+                  <p>
+                    <Link className="nav-link" to="/addartist">
+                      Add Artist
                     </Link>
                   </p>
                 ) : null}

@@ -52,7 +52,7 @@ contract('AuctionHouse', ([deployer, seller, buyer, account1, account2]) =>{
 			bid = await auctionHouse.bid(auctionCount, web3.utils.toWei('2', 'Ether'), productCount, { from: buyer})
 			// deletes = await auctionHouse.deleteProduct(productCount)
 			donated = await auctionHouse.donation(web3.utils.toWei('1', 'Ether'), artistCount, {from: buyer, value: web3.utils.toWei('1', 'Ether')})
-			// ends = await auctionHouse.auctionEnd(auctionCount)
+			ends = await auctionHouse.auctionEnd(auctionCount)
 		})
 
 		it('creates artist', async () => {
@@ -172,30 +172,30 @@ contract('AuctionHouse', ([deployer, seller, buyer, account1, account2]) =>{
 		// 	assert.equal(product.purchased, false, 'Purchased is correct')
 		// })
 
-		// it('ends', async () => {
-		// 	let initialOwnerBalance
-  //     		initialOwnerBalance = await web3.eth.getBalance(buyer)
-  //     		initialOwnerBalance = new web3.utils.BN(initialOwnerBalance)
+		it('ends', async () => {
+			let initialOwnerBalance
+      		initialOwnerBalance = await web3.eth.getBalance(buyer)
+      		initialOwnerBalance = new web3.utils.BN(initialOwnerBalance)
 
-  //     		ended = await auctionHouse.auctionEnd(auctionCount, {from: buyer, value: web3.utils.toWei('2', 'Ether')})
- 	// 		const event = ended.logs[0].args
- 	// 		assert.equal(event.winner, buyer, 'winner is correct')
- 	// 		assert.equal(event.amount, '2000000000000000000', 'amount is correct')
+      		ended = await auctionHouse.auctionEnd(auctionCount, {from: buyer, value: web3.utils.toWei('2', 'Ether')})
+ 			const event = ended.logs[0].args
+ 			assert.equal(event.winner, buyer, 'winner is correct')
+ 			assert.equal(event.amount, '2000000000000000000', 'amount is correct')
 
- 	// 		let newOwnerBalance
-  //     		newOwnerBalance = await web3.eth.getBalance(buyer)
-  //     		newOwnerBalance = new web3.utils.BN(newOwnerBalance)
+ 			let newOwnerBalance
+      		newOwnerBalance = await web3.eth.getBalance(buyer)
+      		newOwnerBalance = new web3.utils.BN(newOwnerBalance)
 
-  //     		let price
-  //     		price = web3.utils.toWei('2', 'Ether')
-  //     		price = new web3.utils.BN(price)
+      		let price
+      		price = web3.utils.toWei('2', 'Ether')
+      		price = new web3.utils.BN(price)
 
-  //     		const exepectedBalance = initialOwnerBalance.add(price)
+      		const exepectedBalance = initialOwnerBalance.add(price)
 
-  //     		assert.equal(newOwnerBalance.toString(), exepectedBalance.toString(), "Idk")
+      		assert.equal(newOwnerBalance.toString(), exepectedBalance.toString(), "Idk")
 
- 	// 		await await auctionHouse.auctionEnd('').should.be.rejected;
- 	// 	})
+ 			await await auctionHouse.auctionEnd('').should.be.rejected;
+ 		})
 
 
 	})

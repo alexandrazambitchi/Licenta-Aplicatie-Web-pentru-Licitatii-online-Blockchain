@@ -14,6 +14,7 @@ contract AuctionHouse {
     uint public productsOnAuction = 0;
     uint public activeAuction = 0;
     uint public artistCount = 0;
+    uint public donationsCount = 0;
     mapping (uint => Artist) public artists;
 	mapping(uint => Product) public products;
     mapping(uint => Auction) public auctionList;
@@ -238,14 +239,17 @@ contract AuctionHouse {
         auctionList[auction_id] = _auction;
         emit AuctionUpdated(auction_id, _auction.target_price, _auction.auctionEndTime, msg.sender, bid_value, _auction.offerCount, _auction.ended, product_id);
         emit HighestBidIncreased(msg.sender, bid_value);
-        if(bid_value >= _auction.target_price){
-            auctionEnd(auction_id);
-        }
+        // if(bid_value >= _auction.target_price){
+        //     auctionEnd(auction_id);
+        // }
     }
 
     function donation (uint value, uint artist_id) public payable {
         Artist storage _artist = artists[artist_id];
         require (value > 0);
+        if(donations[msg.sender]==0){
+            donationsCount++;
+        }
         donations[msg.sender] += value;
         _artist.amount_collected += value;
         address(msg.sender).transfer(msg.value);

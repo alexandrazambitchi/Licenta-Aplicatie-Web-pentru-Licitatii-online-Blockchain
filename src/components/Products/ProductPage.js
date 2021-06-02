@@ -15,6 +15,19 @@ const ProductPage = (props) => {
   const [clicked, setClicked] = useState(false);
   const [productFound, setProduct] = useState(null);
   const [auctionFound, setAuctionFound] = useState(null);
+  const [artistName, setArtist] = useState(null);
+
+  function getArtist(id_artist) {
+    console.log("Searching the artist");
+    props.artists.map((artist) =>{
+      console.log(artist.id_artist, id_artist);
+      if(artist.id_artist === id_artist){
+        setArtist(artist);
+        console.log("Found the artist")
+      }
+    }
+    )
+  }
 
   function getAuction() {
     props.auctions.map((auction, key) => {
@@ -78,7 +91,15 @@ const ProductPage = (props) => {
               <div className="d-flex">
                 <div className="p-2 flex-grow-1 bd-highlight">
                   <h2 className="section-title">{product.name}</h2>
-                  <ProductInfo key={key} {...product} text={"Back home"} />
+                  {!artistName ? (
+                    getArtist(product.id_artist)
+                  ) : (
+                    <ProductInfo
+                      key={key}
+                      {...product}
+                      artist={artistName.artist_name}
+                    />
+                  )}
                   <div className="p-2 text-left">
                     {props.admin ? (
                       <div>
@@ -216,9 +237,8 @@ const ProductPage = (props) => {
                           ) : (
                             <div>
                               <h1>Auction ended</h1>
-                              {console.log(auctionFound.highestBid==0)}
-                              {
-                                auctionFound.highestBid == 0 ? (
+                              {console.log(auctionFound.highestBid == 0)}
+                              {auctionFound.highestBid == 0 ? (
                                 <p>No one bid at this auction</p>
                               ) : (
                                 <section>

@@ -13,6 +13,10 @@ import AddProduct from "./Products/AddProduct";
 import ProductList from "./Products/ProductList";
 import ProductListSoonOnAuction from "./Products/ProductListSoonOnAuction";
 import Sold from "./Products/EndedAuction"
+import AddArtist from "./pages/AddArtist";
+import ArtistList from "./pages/ArtistList"
+import ArtistPage from "./pages/ArtistPage"
+import Products from "./Products/Products"
 
 const ipfsClient = require("ipfs-api");
 const ipfs = ipfsClient({
@@ -59,17 +63,26 @@ class App extends Component {
         networkData.address
       );
       this.setState({ auctionHouse });
+      const artistCount = await auctionHouse.methods.artistCount().call();
       const productCount = await auctionHouse.methods.productCount().call();
       const auctionCount = await auctionHouse.methods.auctionCount().call();
-      const productsOnAuction = await auctionHouse.methods.productsOnAuction().call();
+      const productsOnAuction = await auctionHouse.methods
+        .productsOnAuction()
+        .call();
       const activeAuction = await auctionHouse.methods.activeAuction().call();
       const owner = await auctionHouse.methods.owner().call();
+      this.setState({ artistCount });
       this.setState({ productCount });
       this.setState({ auctionCount });
       this.setState({ productsOnAuction });
       this.setState({ activeAuction });
       this.setState({ owner });
-      
+      for (var i = 1; i <= artistCount; i++) {
+        const artist = await auctionHouse.methods.artists(i).call();
+        this.setState({
+          artists: [...this.state.artists, artist],
+        });
+      }
       for (var i = 1; i <= productCount; i++) {
         const product = await auctionHouse.methods.products(i).call();
         this.setState({
@@ -101,18 +114,45 @@ class App extends Component {
       auctionCount: 0,
       productsOnAuction: 0,
       activeAuction: 0,
+      artistCount: 0,
       owner: "",
       winner: "",
+      artists: [],
       products: [],
       auctions: [],
       loading: true,
       admin: true,
     };
+    this.createArtist = this.createArtist.bind(this);
+    this.editArtist = this.editArtist.bind(this);
     this.createProduct = this.createProduct.bind(this);
-    this.createAuction = this.createAuction.bind(this);
-    this.bid = this.bid.bind(this);
-    this.auctionEnd = this.auctionEnd.bind(this);
+    this.editProduct = this.editProduct.bind(this);
     this.deleteProduct = this.deleteProduct.bind(this);
+    this.createAuction = this.createAuction.bind(this);
+    this.editAuction = this.editAuction.bind(this);
+    this.bid = this.bid.bind(this);
+    this.donate = this.donate.bind(this);
+    this.auctionEnd = this.auctionEnd.bind(this);
+  }
+
+  createArtist(name, details) {
+    this.setState({ loading: true });
+    this.state.auctionHouse.methods
+      .createArtist(name, details)
+      .send({ from: this.state.account })
+      .once("receipt", (receipt) => {
+        this.setState({ loading: false });
+      });
+  }
+
+  editArtist(id, name, details) {
+    this.setState({ loading: true });
+    this.state.auctionHouse.methods
+      .editArtist(id, name, details)
+      .send({ from: this.state.account })
+      .once("receipt", (receipt) => {
+        this.setState({ loading: false });
+      });
   }
 
   captureFile = (event) => {
@@ -153,10 +193,57 @@ class App extends Component {
     });
   }
 
+  editProduct(id, name, price, artist, category, description) {
+    console.log("Submiting file...");
+
+    ipfs.add(this.state.buffer, (error, result) => {
+      console.log("Ipfs result", result);
+      if (error) {
+        console.error(error);
+        return;
+      }
+      this.setState({ loading: true });
+      this.state.auctionHouse.methods
+        .editProduct(
+          id,
+          name,
+          price,
+          artist,
+          category,
+          description,
+          result[0].hash
+        )
+        .send({ from: this.state.account })
+        .once("receipt", (receipt) => {
+          this.setState({ loading: false });
+        });
+    });
+  }
+
+  deleteProduct(id_product) {
+    this.setState({ loading: true });
+    this.state.auctionHouse.methods
+      .deleteProduct(id_product)
+      .send({ from: this.state.account })
+      .once("receipt", (receipt) => {
+        this.setState({ loading: false });
+      });
+  }
+
   createAuction(id) {
     this.setState({ loading: true });
     this.state.auctionHouse.methods
       .createAuction(id)
+      .send({ from: this.state.account })
+      .once("receipt", (receipt) => {
+        this.setState({ loading: false });
+      });
+  }
+
+  editAuction(id, target) {
+    this.setState({ loading: true });
+    this.state.auctionHouse.methods
+      .editAuction(id, target)
       .send({ from: this.state.account })
       .once("receipt", (receipt) => {
         this.setState({ loading: false });
@@ -173,34 +260,23 @@ class App extends Component {
       });
   }
 
-  auctionEnd(id, valueBid, winnerAccount) {
+  donate(value, artist_id) {
     this.setState({ loading: true });
-    const web3 = window.web3;
-    // web3.eth.sendTransaction({
-    //   from: winnerAccount,
-    //   to: this.state.account,
-    //   value: valueBid
-    // }, function(error, result){
-    //   if(!error){
-    //     console.log(result)
-    //   } else{
-    //     console.log(error);
-    //   }
-    // })
-    this.setState({winner: winnerAccount})
     this.state.auctionHouse.methods
-      .auctionEnd(id)
-      .send({ from: this.state.account, value: valueBid })
+      .donation(value, artist_id)
+      .send({ from: this.state.account, value: value })
       .once("receipt", (receipt) => {
         this.setState({ loading: false });
       });
   }
 
-  deleteProduct(id_product) {
+  auctionEnd(id, valueBid, winnerAccount) {
     this.setState({ loading: true });
+    const web3 = window.web3;
+    this.setState({ winner: winnerAccount });
     this.state.auctionHouse.methods
-      .deleteProduct(id_product)
-      .send({ from: this.state.account })
+      .auctionEnd(id)
+      .send({ from: this.state.winner, value: valueBid })
       .once("receipt", (receipt) => {
         this.setState({ loading: false });
       });
@@ -253,12 +329,20 @@ class App extends Component {
               owner={this.state.owner}
               account={this.state.account}
               products={this.state.products}
-              auctions={this.state.auctions}
+              artists={this.state.artists}
               createProduct={this.createProduct}
               loading={this.state.loading}
               captureFile={this.captureFile}
               uploadImage={this.uploadImage}
               deleteProduct={this.deleteProduct}
+            />
+          </Route>
+          <Route exact path="/addartist">
+            <AddArtist
+              admin={this.state.admin}
+              artists={this.state.artists}
+              loading={this.state.loading}
+              createArtist={this.createArtist}
             />
           </Route>
           <Route exact path="/activeauction">
@@ -288,7 +372,33 @@ class App extends Component {
               auctionEnd={this.auctionEnd}
               deleteProduct={this.deleteProduct}
               loading={this.state.loading}
+              artists={this.state.artists}
             />
+          </Route>
+          <Route exact path="/artist/:id_artist">
+            <ArtistPage
+              artists={this.state.artists}
+              products={this.state.products}
+            />
+          </Route>
+          <Route exact path="/artists">
+            <ArtistList 
+            artistCount={this.state.artistCount}
+            artists={this.state.artists}/>
+          </Route>
+          <Route exact path="/products">
+            <Products 
+              admin={this.state.admin}
+              productCount={this.state.productCount}
+              productsOnAuction={this.state.productsOnAuction}
+              activeAuction={this.state.activeAuction}
+              products={this.state.products}
+              auctions={this.state.auctions}
+              createAuction={this.createAuction}
+              bid={this.bid}
+              deleteProduct={this.deleteProduct}
+              loading={this.state.loading}
+              />
           </Route>
           <Route exact path="/sold">
             <Sold

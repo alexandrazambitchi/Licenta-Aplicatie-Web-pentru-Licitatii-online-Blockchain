@@ -1,16 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "../App.css";
+
 export default function ProductInfo({
   image_hash,
   name,
-  id_product,
-  artist_name,
   category,
-  auction_started,
   description,
-  purchased,
-  text,
+  artist
 }) {
   return (
     <div className="product">
@@ -27,7 +24,7 @@ export default function ProductInfo({
         </h4>
         <h4>
           <span className="badge bg-secondary bg-large">Artist Name:</span>
-          {artist_name}
+          {artist}
         </h4>
         <h4>
           <span className="badge bg-secondary bg-large">Category:</span>
