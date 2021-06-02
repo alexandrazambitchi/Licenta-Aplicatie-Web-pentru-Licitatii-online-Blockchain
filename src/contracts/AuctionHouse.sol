@@ -252,7 +252,7 @@ contract AuctionHouse {
         }
         donations[msg.sender] += value;
         _artist.amount_collected += value;
-        address(msg.sender).transfer(msg.value);
+        address(msg.sender).send(msg.value);
         emit IncreasedDonation(artist_id, _artist.artist_name, msg.value);
     }
     

@@ -99,6 +99,8 @@ class App extends Component {
       if (this.state.account === this.state.owner) {
         this.setState({ admin: true });
       } else {
+        // const donations = await auctionHouse.methods.donations[this.state.account].call();
+        // this.setState({ donatedValue: donations })
         this.setState({ admin: false });
       }
     } else {
@@ -117,6 +119,7 @@ class App extends Component {
       artistCount: 0,
       owner: "",
       winner: "",
+      donatedValue: 0,
       artists: [],
       products: [],
       auctions: [],
@@ -373,21 +376,27 @@ class App extends Component {
               deleteProduct={this.deleteProduct}
               loading={this.state.loading}
               artists={this.state.artists}
+              editAuction={this.editAuction}
             />
           </Route>
           <Route exact path="/artist/:id_artist">
             <ArtistPage
               artists={this.state.artists}
               products={this.state.products}
+              admin={this.state.admin}
+              donate={this.donate}
+              loading={this.state.loading}
             />
           </Route>
           <Route exact path="/artists">
-            <ArtistList 
-            artistCount={this.state.artistCount}
-            artists={this.state.artists}/>
+            <ArtistList
+              artistCount={this.state.artistCount}
+              artists={this.state.artists}
+              donatedValue={this.state.donatedValue}
+            />
           </Route>
           <Route exact path="/products">
-            <Products 
+            <Products
               admin={this.state.admin}
               productCount={this.state.productCount}
               productsOnAuction={this.state.productsOnAuction}
@@ -398,7 +407,7 @@ class App extends Component {
               bid={this.bid}
               deleteProduct={this.deleteProduct}
               loading={this.state.loading}
-              />
+            />
           </Route>
           <Route exact path="/sold">
             <Sold

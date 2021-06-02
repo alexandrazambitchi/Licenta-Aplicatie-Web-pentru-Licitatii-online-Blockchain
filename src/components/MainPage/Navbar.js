@@ -18,13 +18,18 @@ class Navbar extends Component {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/products">
-                  All products<span className="visually-hidden">(current)</span>
+                <Link className="nav-link" to="/about">
+                  About<span className="visually-hidden">(current)</span>
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/about">
-                  About<span className="visually-hidden">(current)</span>
+                <Link className="nav-link" to="/products">
+                  Products<span className="visually-hidden">(current)</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/artists">
+                  Artists<span className="visually-hidden">(current)</span>
                 </Link>
               </li>
               <li className="nav-item">

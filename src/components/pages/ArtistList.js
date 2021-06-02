@@ -12,6 +12,7 @@ class ArtistList extends Component {
           </div>
         ) : (
           <div>
+            {/* <p>{this.props.donatedValue}</p> */}
             <p>&nbsp;</p>
             {this.props.artistCount === 0 ? (
               <div className="text-center">

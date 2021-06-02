@@ -8,6 +8,7 @@ import Auction from "../Products/Auction";
 const ProductPage = (props) => {
   const params = useParams();
   const [auctionTimer, setAuction] = useState(0);
+  const [targetHit, setTarget] = useState(false);
   const [endTime, setEndTime] = useState(-1);
   const [disable, setDisable] = useState(false);
   const [endDate, setEndDate] = useState(0);
@@ -19,11 +20,9 @@ const ProductPage = (props) => {
 
   function getArtist(id_artist) {
     console.log("Searching the artist");
-    props.artists.map((artist) =>{
-      console.log(artist.id_artist, id_artist);
+    props.artists.map((artist) => {
       if(artist.id_artist === id_artist){
         setArtist(artist);
-        console.log("Found the artist")
       }
     }
     )
@@ -32,9 +31,17 @@ const ProductPage = (props) => {
   function getAuction() {
     props.auctions.map((auction, key) => {
       if (auction.id_product === params.id_product) {
+        console.log(auction.offerCount)
         setAuctionFound(auction);
       }
     });
+  }
+
+  function isTargetHit(){
+    if(auctionFound.highestBidder >= auctionFound.target_price){
+      console.log("target", targetHit)
+      setTarget(true);
+    }
   }
 
   useEffect(() => {
@@ -49,24 +56,24 @@ const ProductPage = (props) => {
   }, [auctionTimer]);
 
   useEffect(() => {
+    setDisable(true)
+  }, [targetHit]);
+
+  useEffect(() => {
     setLoading(true);
     // console.log("clicked value", clicked);
     async function getProduct() {
       try {
-        {
           props.products.map((product, key) => {
             if (product.id_product === params.id_product) {
-              {
                 props.auctions.map((auction, key) => {
                   if (auction.id_product === params.id_product) {
                     return setAuction(auction);
                   }
                 });
-              }
               setProduct(product);
             }
           });
-        }
       } catch (error) {
         console.log(error);
       }
@@ -116,7 +123,58 @@ const ProductPage = (props) => {
                             Start Auction
                           </button>
                         ) : (
-                          <div>Auction started</div>
+                          <div>
+                            {!auctionFound ? (
+                              getAuction()
+                            ) : (
+                              <div>
+                                {auctionFound.offerCount === 0 ? 
+                                (<form
+                                  onSubmit={(event) => {
+                                    event.preventDefault();
+                                    const value = window.web3.utils.toWei(
+                                      this.newTarget.value.toString(),
+                                      "Ether"
+                                    );
+                                    props.editAuction(
+                                      auctionFound.id_auction,
+                                      value
+                                    );
+                                  }}
+                                >
+                                  <div className="form-group">
+                                    <label className="form-label mt-4">
+                                      New target price
+                                    </label>
+                                    <input
+                                      id="newTarget"
+                                      type="text"
+                                      ref={(input) => {
+                                        this.newTarget = input;
+                                      }}
+                                      className="form-control"
+                                      placeholder="New target price"
+                                    />
+                                    <small className="form-text text-muted">
+                                      Price should be in ethers.
+                                    </small>
+                                  </div>
+                                  <button
+                                    type="submit"
+                                    className="btn btn-primary"
+                                    onClick={(event) => {
+                                      setClicked(true);
+                                      // console.log("clicked...", clicked);
+                                    }}
+                                  >
+                                    Change target price
+                                  </button>
+                                  <p></p>
+                                  {!loading ? setLoading(true) : null}
+                                </form>) : null}
+                              </div>
+                            )}
+                          </div>
                         )}
                         <button
                           className="btn btn-primary"
@@ -178,6 +236,10 @@ const ProductPage = (props) => {
                                         ends soon.
                                       </h2>
                                     ) : null}
+                                    {targetHit ? (
+                                      <h3>Target price was hit!</h3>
+                                    ): (<h3>Time to place bets ended</h3>)}
+                                    {console.log("target hit", targetHit)}
                                     <label className="form-label mt-4">
                                       Bid Value
                                     </label>
@@ -209,6 +271,7 @@ const ProductPage = (props) => {
                                   </button>
                                   <p></p>
                                   {!loading ? setLoading(true) : null}
+                                  {!targetHit ? isTargetHit() : null}
                                 </form>
                               ) : (
                                 <div>
@@ -224,7 +287,6 @@ const ProductPage = (props) => {
                                             auctionFound.highestBidder
                                           );
                                           setClicked(true);
-                                          // console.log("clicked...", clicked);
                                         }}
                                       >
                                         End Auction
@@ -237,8 +299,8 @@ const ProductPage = (props) => {
                           ) : (
                             <div>
                               <h1>Auction ended</h1>
-                              {console.log(auctionFound.highestBid == 0)}
-                              {auctionFound.highestBid == 0 ? (
+                              {console.log(auctionFound.highestBid === 0)}
+                              {auctionFound.highestBid === 0 ? (
                                 <p>No one bid at this auction</p>
                               ) : (
                                 <section>

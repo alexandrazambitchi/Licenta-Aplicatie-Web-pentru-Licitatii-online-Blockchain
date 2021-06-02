@@ -17,7 +17,7 @@ class Sold extends Component {
             {console.log("products on auction", this.props.productsOnAuction)}
             {console.log("product count", this.props.productCount)}
             {console.log("auction count", this.props.auctionCount)}
-            {(this.props.productCount - this.props.productsOnAuction) == 0 ? (
+            {(this.props.productCount - this.props.productsOnAuction) === 0 ? (
               <div className="text-center">
                 <h2 className="section-title text-center">Sold products</h2>
                 <h3 className="section-title text-center">No results</h3>
@@ -29,7 +29,6 @@ class Sold extends Component {
                 <h3 className="section-title text-center">Sold</h3>
                 <div className="grid-container">
                   {this.props.products.map((product, key) => {
-                    {console.log(product)}
                     if (product.auction_ended) {
                       return <ProductSold key={key} {...product} />;
                     }
