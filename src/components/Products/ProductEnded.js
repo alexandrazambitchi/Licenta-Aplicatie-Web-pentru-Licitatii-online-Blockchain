@@ -10,29 +10,27 @@ export default function Product({
   category,
   auction_started,
   purchased,
-}) 
-{
-    return (
-          <div>
-            <div className="img-container">
-              <img
-                src={`https://ipfs.infura.io/ipfs/${image_hash}`}
-                alt={name}
-                style={{ maxWidth: "210px" }}
-              />
-            </div>
-            <div className="product-footer">
-              <h3>{name}</h3>
-              <h4>{artist_name}</h4>
-              <p>{category}</p>
-              <Link
-                to={`/product/${id_product}`}
-                className="btn btn-outline-primary btn-details"
-              >
-                More
-              </Link>
-            </div>
-          </div>
-        
-    );
+}) {
+  return (
+    <div>
+      <div className="img-container">
+        <img
+          src={`https://ipfs.infura.io/ipfs/${image_hash}`}
+          alt={name}
+          style={{ maxWidth: "210px" }}
+        />
+      </div>
+      <div className="product-footer">
+        <h3>{name}</h3>
+        <h4>{artist_name}</h4>
+        <p>{category}</p>
+        <Link
+          to={`/product/${id_product}`}
+          className="btn btn-outline-primary btn-details"
+        >
+          More
+        </Link>
+      </div>
+    </div>
+  );
 }

@@ -36,7 +36,7 @@ class Navbar extends Component {
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/sold">
-                  Ended Auction
+                  Ended Auctions
                   <span className="visually-hidden">(current)</span>
                 </Link>
               </li>
