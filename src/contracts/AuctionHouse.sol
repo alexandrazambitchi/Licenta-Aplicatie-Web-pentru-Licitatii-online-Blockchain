@@ -42,6 +42,7 @@ contract AuctionHouse {
         uint offerCount;
         bool ended;
         uint id_product;
+        bool moneySent;
         mapping(address => uint) clients;
     }
 
@@ -118,7 +119,8 @@ contract AuctionHouse {
         uint highestBid,
         uint offerCount,
         bool ended,
-        uint id_product
+        uint id_product, 
+        bool moneySent
     );
 
     event HighestBidIncreased(
@@ -210,7 +212,7 @@ contract AuctionHouse {
         uint endTime = now + 1 hours;
         uint target_price = _product.price * 2;
         products[_id] = _product;
-        auctionList[auctionCount] = Auction(auctionCount, target_price, endTime, address(0), 0, 0, false, _product.id_product);
+        auctionList[auctionCount] = Auction(auctionCount, target_price, endTime, address(0), 0, 0, false, _product.id_product, false);
         emit AuctionCreated(auctionCount, target_price, endTime, _product.id_product);
     }
 
@@ -219,7 +221,7 @@ contract AuctionHouse {
         require(_auction.id_auction > 0 && _auction.id_auction <= auctionCount, "Auction not found");
         _auction.target_price = _target_price;
         auctionList[_id] = _auction;
-        emit AuctionUpdated(_id, _auction.target_price, _auction.auctionEndTime, _auction.highestBidder, _auction.highestBid, _auction.offerCount, _auction.ended, _auction.id_product);
+        emit AuctionUpdated(_id, _auction.target_price, _auction.auctionEndTime, _auction.highestBidder, _auction.highestBid, _auction.offerCount, _auction.ended, _auction.id_product, _auction.moneySent);
     }
 
     function bid (uint auction_id, uint bid_value, uint product_id) public payable {
@@ -237,7 +239,7 @@ contract AuctionHouse {
         _auction.highestBidder = msg.sender;
         _auction.highestBid = bid_value;
         auctionList[auction_id] = _auction;
-        emit AuctionUpdated(auction_id, _auction.target_price, _auction.auctionEndTime, msg.sender, bid_value, _auction.offerCount, _auction.ended, product_id);
+        emit AuctionUpdated(auction_id, _auction.target_price, _auction.auctionEndTime, msg.sender, bid_value, _auction.offerCount, _auction.ended, product_id, _auction.moneySent);
         emit HighestBidIncreased(msg.sender, bid_value);
         // if(bid_value >= _auction.target_price){
         //     auctionEnd(auction_id);
@@ -252,10 +254,17 @@ contract AuctionHouse {
         }
         donations[msg.sender] += value;
         _artist.amount_collected += value;
-        address(msg.sender).send(msg.value);
+        address(owner).transfer(msg.value);
         emit IncreasedDonation(artist_id, _artist.artist_name, msg.value);
     }
     
+    function sendValue(uint _id) public payable {
+        Auction storage _auction = auctionList[_id];
+        _auction.moneySent = true;
+        auctionList[_id] = _auction;
+        emit AuctionUpdated(_id, _auction.target_price, _auction.auctionEndTime, _auction.highestBidder, _auction.highestBid, _auction.offerCount, _auction.ended, _auction.id_product, _auction.moneySent);
+        address(owner).transfer(msg.value);
+    }
 
 
     function auctionEnd(uint _id) public payable {
@@ -281,8 +290,8 @@ contract AuctionHouse {
         activeAuction--;
 
         // uint bid_value = _auction.highestBid;
-        address payable sender = _auction.highestBidder;
-        address(sender).transfer(msg.value);
+        // address payable sender = _auction.highestBidder;
+        // address(owner).transfer(msg.value);
         // address(owner).transfer(msg.value);
         auctionList[_id] = _auction;
         products[_auction.id_product] = _product;

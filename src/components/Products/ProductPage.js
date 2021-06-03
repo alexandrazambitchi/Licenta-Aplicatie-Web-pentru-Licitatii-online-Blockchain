@@ -11,12 +11,16 @@ const ProductPage = (props) => {
   const [targetHit, setTarget] = useState(false);
   const [endTime, setEndTime] = useState(-1);
   const [disable, setDisable] = useState(false);
+  const [disableSent, setDisableSent] = useState(false);
   const [endDate, setEndDate] = useState(0);
   const [loading, setLoading] = useState(false);
   const [clicked, setClicked] = useState(false);
   const [productFound, setProduct] = useState(null);
   const [auctionFound, setAuctionFound] = useState(null);
   const [artistName, setArtist] = useState(null);
+  const [moneySent, setMoney] = useState(false);
+  // const [sell, setSell] = useState(false);
+  const [page, reload] = useState(false);
 
   function getArtist(id_artist) {
     console.log("Searching the artist");
@@ -48,7 +52,14 @@ const ProductPage = (props) => {
     setTarget(false);
     setDisable(false);
     setClicked(false);
+    setDisableSent(false);
   }, [params])
+
+  useEffect(() =>{
+    console.log("disable sent", disableSent)
+    setDisableSent(true);
+    console.log("disable sent after", disableSent);
+  }, [moneySent])
 
   useEffect(() => {
     const timer1 = setTimeout(
@@ -124,6 +135,7 @@ const ProductPage = (props) => {
                               props.createAuction(product.id_product);
                               setClicked(true);
                               // console.log("clicked...", clicked);
+                              reload(!page);
                             }}
                           >
                             Start Auction
@@ -134,50 +146,52 @@ const ProductPage = (props) => {
                               getAuction()
                             ) : (
                               <div>
-                                {auctionFound.offerCount === 0 ? 
-                                (<form
-                                  onSubmit={(event) => {
-                                    event.preventDefault();
-                                    const value = window.web3.utils.toWei(
-                                      this.newTarget.value.toString(),
-                                      "Ether"
-                                    );
-                                    props.editAuction(
-                                      auctionFound.id_auction,
-                                      value
-                                    );
-                                  }}
-                                >
-                                  <div className="form-group">
-                                    <label className="form-label mt-4">
-                                      New target price
-                                    </label>
-                                    <input
-                                      id="newTarget"
-                                      type="text"
-                                      ref={(input) => {
-                                        this.newTarget = input;
-                                      }}
-                                      className="form-control"
-                                      placeholder="New target price"
-                                    />
-                                    <small className="form-text text-muted">
-                                      Price should be in ethers.
-                                    </small>
-                                  </div>
-                                  <button
-                                    type="submit"
-                                    className="btn btn-primary"
-                                    onClick={(event) => {
-                                      setClicked(true);
-                                      // console.log("clicked...", clicked);
+                                {auctionFound.offerCount === "0" ? (
+                                  <form
+                                    onSubmit={(event) => {
+                                      event.preventDefault();
+                                      const value = window.web3.utils.toWei(
+                                        this.newTarget.value.toString(),
+                                        "Ether"
+                                      );
+                                      props.editAuction(
+                                        auctionFound.id_auction,
+                                        value
+                                      );
                                     }}
                                   >
-                                    Change target price
-                                  </button>
-                                  <p></p>
-                                  {!loading ? setLoading(true) : null}
-                                </form>) : null}
+                                    <div className="form-group">
+                                      <label className="form-label mt-4">
+                                        New target price
+                                      </label>
+                                      <input
+                                        id="newTarget"
+                                        type="text"
+                                        ref={(input) => {
+                                          this.newTarget = input;
+                                        }}
+                                        className="form-control"
+                                        placeholder="New target price"
+                                      />
+                                      <small className="form-text text-muted">
+                                        Price should be in ethers.
+                                      </small>
+                                    </div>
+                                    <button
+                                      type="submit"
+                                      className="btn btn-primary"
+                                      onClick={(event) => {
+                                        setClicked(true);
+                                        reload(!page);
+                                        // console.log("clicked...", clicked);
+                                      }}
+                                    >
+                                      Change target price
+                                    </button>
+                                    <p></p>
+                                    {!loading ? setLoading(true) : null}
+                                  </form>
+                                ) : null}
                               </div>
                             )}
                           </div>
@@ -188,6 +202,7 @@ const ProductPage = (props) => {
                           onClick={(event) => {
                             props.deleteProduct(product.id_product);
                             setClicked(true);
+                            reload(!page);
                             // console.log("clicked...", clicked);
                           }}
                         >
@@ -221,64 +236,92 @@ const ProductPage = (props) => {
                           {!auctionFound.ended ? (
                             <section>
                               {!props.admin ? (
-                                <form
-                                  onSubmit={(event) => {
-                                    event.preventDefault();
-                                    const value = window.web3.utils.toWei(
-                                      this.bidValue.value.toString(),
-                                      "Ether"
-                                    );
-                                    props.bid(
-                                      auctionFound.id_auction,
-                                      value,
-                                      product.id_product
-                                    );
-                                  }}
-                                >
-                                  <div className="form-group">
-                                    {disable ? (
-                                      <h2>
-                                        You can no longer place bids. Auction
-                                        ends soon.
-                                      </h2>
-                                    ) : null}
-                                    {targetHit ? (
-                                      <h3>Target price was hit!</h3>
-                                    ): (<h3>Time to place bets ended</h3>)}
-                                    {console.log("target hit", targetHit)}
-                                    <label className="form-label mt-4">
-                                      Bid Value
-                                    </label>
-                                    <input
-                                      id="bidValue"
-                                      type="text"
-                                      ref={(input) => {
-                                        this.bidValue = input;
-                                      }}
-                                      className="form-control"
-                                      placeholder="Bid Value"
-                                      required
-                                      disabled={disable}
-                                    />
-                                    <small className="form-text text-muted">
-                                      Price should be in ethers.
-                                    </small>
-                                  </div>
-                                  <button
-                                    type="submit"
-                                    className="btn btn-primary"
-                                    disabled={disable}
-                                    onClick={(event) => {
-                                      setClicked(true);
-                                      // console.log("clicked...", clicked);
+                                <div>
+                                  <form
+                                    onSubmit={(event) => {
+                                      event.preventDefault();
+                                      const value = window.web3.utils.toWei(
+                                        this.bidValue.value.toString(),
+                                        "Ether"
+                                      );
+                                      props.bid(
+                                        auctionFound.id_auction,
+                                        value,
+                                        product.id_product
+                                      );
+                                      reload(!page);
                                     }}
                                   >
-                                    Place bid
-                                  </button>
-                                  <p></p>
-                                  {!loading ? setLoading(true) : null}
-                                  {!targetHit ? isTargetHit() : null}
-                                </form>
+                                    <div className="form-group">
+                                      {disable ? (
+                                        <h2>
+                                          You can no longer place bids. Auction
+                                          ends soon.
+                                        </h2>
+                                      ) : null}
+                                      {targetHit ? (
+                                        <h3>Target price was hit!</h3>
+                                      ) : null}
+                                      {disable && !targetHit ? (
+                                        <h3>Time to place bets ended</h3>
+                                      ) : null}
+                                      {console.log("target hit", targetHit)}
+                                      <label className="form-label mt-4">
+                                        Bid Value
+                                      </label>
+                                      <input
+                                        id="bidValue"
+                                        type="text"
+                                        ref={(input) => {
+                                          this.bidValue = input;
+                                        }}
+                                        className="form-control"
+                                        placeholder="Bid Value"
+                                        required
+                                        disabled={disable}
+                                      />
+                                      <small className="form-text text-muted">
+                                        Price should be in ethers.
+                                      </small>
+                                    </div>
+                                    <button
+                                      type="submit"
+                                      className="btn btn-primary"
+                                      disabled={disable}
+                                      onClick={(event) => {
+                                        setClicked(true);
+                                        reload(!page);
+                                        // console.log("clicked...", clicked);
+                                      }}
+                                    >
+                                      Place bid
+                                    </button>
+                                    <p></p>
+                                    {!loading ? setLoading(true) : null}
+                                    {!targetHit ? isTargetHit() : null}
+                                  </form>
+                                  {!auctionFound.moneySent && targetHit ? (
+                                    <button
+                                      className="btn btn-primary"
+                                      disabled={disableSent}
+                                      onClick={(event) => {
+                                        props.sendValue(
+                                          auctionFound.highestBid,
+                                          auctionFound.id_auction
+                                        );
+                                        setClicked(true);
+                                        console.log(moneySent);
+                                        setMoney(true);
+                                        setDisableSent(true);
+                                        console.log(moneySent);
+                                        console.log("clicked...", clicked);
+                                        reload(!page);
+                                      }}
+                                    >
+                                      Send money!
+                                    </button>
+                                  ) : null}
+                                </div>
                               ) : (
                                 <div>
                                   {!product.purchased ? (
@@ -293,6 +336,7 @@ const ProductPage = (props) => {
                                             auctionFound.highestBidder
                                           );
                                           setClicked(true);
+                                          reload(!page);
                                         }}
                                       >
                                         End Auction
@@ -310,15 +354,21 @@ const ProductPage = (props) => {
                                 <p>No one bid at this auction</p>
                               ) : (
                                 <section>
-                                  <h3>Product sold</h3>
-                                  <p>
-                                    Sold for:{" "}
-                                    {window.web3.utils.fromWei(
-                                      auctionFound.highestBid,
-                                      "Ether"
-                                    )}{" "}
-                                    Eth
-                                  </p>
+                                  {!targetHit ? (
+                                    <h3>No one bid above the target price</h3>
+                                  ) : (
+                                    <section>
+                                      <h3>Product sold</h3>
+                                      <p>
+                                        Sold for:{" "}
+                                        {window.web3.utils.fromWei(
+                                          auctionFound.highestBid,
+                                          "Ether"
+                                        )}{" "}
+                                        Eth
+                                      </p>
+                                    </section>
+                                  )}
                                 </section>
                               )}
                             </div>

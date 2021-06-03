@@ -135,6 +135,7 @@ class App extends Component {
     this.editAuction = this.editAuction.bind(this);
     this.bid = this.bid.bind(this);
     this.donate = this.donate.bind(this);
+    this.sendValue = this.sendValue.bind(this);
     this.auctionEnd = this.auctionEnd.bind(this);
   }
 
@@ -263,11 +264,21 @@ class App extends Component {
       });
   }
 
-  donate(value, artist_id) {
+  donate(valueDonation, artist_id) {
     this.setState({ loading: true });
     this.state.auctionHouse.methods
-      .donation(value, artist_id)
-      .send({ from: this.state.account, value: value })
+      .donation(valueDonation, artist_id)
+      .send({ from: this.state.account, value: valueDonation })
+      .once("receipt", (receipt) => {
+        this.setState({ loading: false });
+      });
+  }
+
+  sendValue(valueBid, id){
+    this.setState({ loading: true });
+    this.state.auctionHouse.methods
+      .sendValue(id)
+      .send({ from: this.state.account, value: valueBid })
       .once("receipt", (receipt) => {
         this.setState({ loading: false });
       });
@@ -275,11 +286,9 @@ class App extends Component {
 
   auctionEnd(id, valueBid, winnerAccount) {
     this.setState({ loading: true });
-    const web3 = window.web3;
-    this.setState({ winner: winnerAccount });
     this.state.auctionHouse.methods
       .auctionEnd(id)
-      .send({ from: this.state.account, value: valueBid })
+      .send({ from: this.state.account})
       .once("receipt", (receipt) => {
         this.setState({ loading: false });
       });
@@ -377,6 +386,7 @@ class App extends Component {
               loading={this.state.loading}
               artists={this.state.artists}
               editAuction={this.editAuction}
+              sendValue={this.sendValue}
             />
           </Route>
           <Route exact path="/artist/:id_artist">
@@ -393,6 +403,7 @@ class App extends Component {
               artistCount={this.state.artistCount}
               artists={this.state.artists}
               donatedValue={this.state.donatedValue}
+              loading={this.state.loading}
             />
           </Route>
           <Route exact path="/products">

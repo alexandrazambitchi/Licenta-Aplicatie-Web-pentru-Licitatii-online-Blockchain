@@ -14,7 +14,7 @@ class ArtistList extends Component {
           <div>
             {/* <p>{this.props.donatedValue}</p> */}
             <p>&nbsp;</p>
-            {this.props.artistCount === 0 ? (
+            {this.props.artistCount === '0' ? (
               <div className="text-center">
                 <h2 className="section-title text-center">Artists</h2>
                 <h3 className="section-title text-center">No results</h3>
