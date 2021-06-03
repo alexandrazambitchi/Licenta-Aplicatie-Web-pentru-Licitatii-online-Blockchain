@@ -38,11 +38,17 @@ const ProductPage = (props) => {
   }
 
   function isTargetHit(){
-    if(auctionFound.highestBidder >= auctionFound.target_price){
+    if(auctionFound.highestBid >= auctionFound.target_price){
       console.log("target", targetHit)
       setTarget(true);
     }
   }
+
+  useEffect(() => {
+    setTarget(false);
+    setDisable(false);
+    setClicked(false);
+  }, [params])
 
   useEffect(() => {
     const timer1 = setTimeout(

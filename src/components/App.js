@@ -279,7 +279,7 @@ class App extends Component {
     this.setState({ winner: winnerAccount });
     this.state.auctionHouse.methods
       .auctionEnd(id)
-      .send({ from: this.state.winner, value: valueBid })
+      .send({ from: this.state.account, value: valueBid })
       .once("receipt", (receipt) => {
         this.setState({ loading: false });
       });
