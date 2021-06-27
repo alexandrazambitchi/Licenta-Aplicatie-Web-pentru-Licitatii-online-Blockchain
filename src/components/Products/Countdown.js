@@ -14,7 +14,6 @@ class Countdown extends Component {
   }
 
   componentDidMount() {
-    // update every second
     this.interval = setInterval(() => {
       const date = this.calculateCountdown(this.props.date);
       date ? this.setState(date) : this.stop();
@@ -41,17 +40,14 @@ class Countdown extends Component {
 
     // calculate time difference between now and expected date
     if (diff >= 365.25 * 86400) {
-      // 365.25 * 24 * 60 * 60
       timeLeft.years = Math.floor(diff / (365.25 * 86400));
       diff -= timeLeft.years * 365.25 * 86400;
     }
     if (diff >= 86400) {
-      // 24 * 60 * 60
       timeLeft.days = Math.floor(diff / 86400);
       diff -= timeLeft.days * 86400;
     }
     if (diff >= 3600) {
-      // 60 * 60
       timeLeft.hours = Math.floor(diff / 3600);
       diff -= timeLeft.hours * 3600;
     }

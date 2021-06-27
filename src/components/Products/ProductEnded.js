@@ -7,9 +7,7 @@ export default function Product({
   name,
   id_product,
   artist_name,
-  category,
-  auction_started,
-  purchased,
+  category
 }) {
   return (
     <div>

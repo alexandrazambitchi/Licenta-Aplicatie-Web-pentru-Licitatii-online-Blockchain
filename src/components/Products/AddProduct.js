@@ -1,7 +1,112 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import Web3 from "web3";
+import AuctionHouse from "../../abis/AuctionHouse.json";
+
+const ipfsClient = require("ipfs-api");
+const ipfs = ipfsClient({
+  host: "ipfs.infura.io",
+  port: 5001,
+  protocol: "https",
+});
 
 class AddProduct extends Component {
+  async componenWillMount() {
+    await this.loadWeb3();
+    await this.loadBlockchainData();
+  }
+
+  async componentDidMount() {
+    await this.loadWeb3();
+    await this.loadBlockchainData();
+  }
+
+  async loadWeb3() {
+    if (window.ethereum) {
+      window.web3 = new Web3(window.ethereum);
+      await window.ethereum.enable();
+    } else if (window.web3) {
+      window.web3 = new Web3(window.web3.currentProvider);
+    } else {
+      window.alert(
+        "Non-Ethereum browser detected. You should consider trying MetaMask!"
+      );
+    }
+  }
+
+  async loadBlockchainData() {
+    const web3 = window.web3;
+    const accounts = await web3.eth.getAccounts();
+    this.setState({ account: accounts[0] });
+    const networkId = await web3.eth.net.getId();
+    const networkData = AuctionHouse.networks[networkId];
+    if (networkData) {
+      const auctionHouse = new web3.eth.Contract(
+        AuctionHouse.abi,
+        networkData.address
+      );
+      this.setState({ auctionHouse });
+      const owner = await auctionHouse.methods.owner().call();
+      this.setState({ owner });
+      this.setState({ loading: false });
+      if (this.state.account === this.state.owner) {
+        this.setState({ admin: true });
+      } else {
+        this.setState({ admin: false });
+      }
+    } else {
+      window.alert("Auction House contract not deployed to detected network.");
+    }
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      account: "",
+      owner: "",
+      loading: true,
+      admin: true,
+    };
+    this.createProduct = this.createProduct.bind(this);
+  }
+
+  captureFile = (event) => {
+    event.preventDefault();
+    const file = event.target.files[0];
+    const reader = new window.FileReader();
+    reader.readAsArrayBuffer(file);
+
+    reader.onloadend = () => {
+      this.setState({ buffer: Buffer(reader.result) });
+      console.log("buffer", this.state.buffer);
+    };
+  };
+
+  createProduct(name, price, artist, category, description) {
+    console.log("Submiting file...");
+
+    ipfs.add(this.state.buffer, (error, result) => {
+      console.log("Ipfs result", result);
+      if (error) {
+        console.error(error);
+        return;
+      }
+      this.setState({ loading: true });
+      this.state.auctionHouse.methods
+        .createProduct(
+          name,
+          price,
+          artist,
+          category,
+          description,
+          result[0].hash
+        )
+        .send({ from: this.state.account })
+        .once("receipt", (receipt) => {
+          this.setState({ loading: false });
+        });
+    });
+  }
 
   submitHandler = (event) => {
     event.preventDefault();
@@ -17,6 +122,10 @@ class AddProduct extends Component {
   };
 
   render() {
+    let { valid, written } = this.state,
+      divClass = "form-group has-";
+    valid && written && (divClass += "success");
+    !valid && written && (divClass += "danger");
     if (this.props.owner === this.props.account) {
       return (
         <div id="content">
@@ -46,7 +155,7 @@ class AddProduct extends Component {
                       />
                     </div>
                   </div>
-                  <div className="form-group">
+                  <div className={divClass}>
                     <label className="col-sm-2 col-form-label">
                       Product price
                     </label>
@@ -54,7 +163,9 @@ class AddProduct extends Component {
                       <input
                         id="productPrice"
                         name="price"
-                        type="text"
+                        type="number"
+                        min="0.01"
+                        step=".01"
                         ref={(input) => {
                           this.productPrice = input;
                         }}
@@ -79,8 +190,10 @@ class AddProduct extends Component {
                         required
                         placeholder="Select Artist"
                       >
-                        {this.props.artists.map((artist, key)=>(
-                          <option value={artist.id_artist}>{artist.artist_name}</option>
+                        {this.props.artists.map((artist, key) => (
+                          <option value={artist.id_artist}>
+                            {artist.artist_name}
+                          </option>
                         ))}
                       </select>
                     </div>
@@ -134,27 +247,9 @@ class AddProduct extends Component {
                       required
                     />
                   </div>
-                  {/* <div className="form-group mr-sm-2">
-              <input
-                id="imageFile"
-                type="text"
-                ref={(input) => {
-                  this.imageFile = input;
-                }}
-                className="form-control"
-                placeholder="Image Description"
-                required
-              />
-            </div> */}
                   <p></p>
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    // onClick={history.push("/")}
-                  >
-                    {/* <Link to="/" className="btn btn-primary"> */}
+                  <button type="submit" className="btn btn-primary">
                     Add Product
-                    {/* </Link> */}
                   </button>
                   <Link to="/" className="btn btn-primary">
                     Back Home

@@ -8,7 +8,6 @@ export default function Product({
   artist_name,
   category,
   auction_started,
-  purchased,
   auction_ended,
   text
 }) {

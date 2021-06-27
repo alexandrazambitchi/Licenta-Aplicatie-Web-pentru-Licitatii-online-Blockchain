@@ -7,7 +7,7 @@ export default function ProductInfo({
   name,
   category,
   description,
-  artist
+  artist,
 }) {
   return (
     <div className="product">
