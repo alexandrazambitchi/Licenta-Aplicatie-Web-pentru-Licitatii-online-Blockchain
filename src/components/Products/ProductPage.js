@@ -280,7 +280,7 @@ class ProductPage extends Component {
         ) : (
           <div id="content">
             {this.state.params === 0 ? this.getParams() : null}
-            {this.state.params > this.state.productCount ? (
+            {Number(this.state.params) > Number(this.state.productCount) ? (
               <Error />
             ) : (
               <div>

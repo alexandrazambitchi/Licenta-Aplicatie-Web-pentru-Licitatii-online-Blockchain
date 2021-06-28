@@ -19,20 +19,15 @@ export default function Auction({
             Target price: {window.web3.utils.fromWei(target_price, "Ether")} Eth
           </p>
         ) : null}
-
         <p>Register bids until: {format(endDate, "dd/MM/yyyy")}</p>
         {!ended ? (
           <div>
             Time left to place offer: <Countdown date={String(endDate)} />{" "}
           </div>
-        ) : (
-          <p>
-            Target price: {window.web3.utils.fromWei(target_price, "Ether")} Eth
-          </p>
-        )}
+        ) : null}
 
         <p>Number of offers: {offerCount}</p>
-        <p>Highest bid: {window.web3.utils.fromWei(highestBid, "Ether")} Eth</p>
+        <p>{window.web3.utils.fromWei(highestBid, "Ether")} Eth</p>
       </div>
     </article>
   );

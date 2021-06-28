@@ -53,6 +53,8 @@ class App extends Component {
         networkData.address
       );
       this.setState({ auctionHouse });
+      const owner = await auctionHouse.methods.owner().call();
+      this.setState({ owner });
       if (this.state.account === this.state.owner) {
         this.setState({ admin: true });
       } else {
@@ -67,6 +69,7 @@ class App extends Component {
     super(props);
     this.state = {
       account: "",
+      owner: "",
       admin: true,
     };
   }

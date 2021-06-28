@@ -215,7 +215,7 @@ contract AuctionHouse {
         _product.auction_started = true;
         auctionCount++;
         activeAuction++;
-        uint endTime = now + 1 hours;
+        uint endTime = now + 1 days;
         uint target_price = _product.price * 2;
         products[_id] = _product;
         auctionList[auctionCount] = Auction(auctionCount, target_price, endTime, address(0), 0, 0, false, _product.id_product, false, false);

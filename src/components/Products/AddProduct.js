@@ -48,6 +48,14 @@ class AddProduct extends Component {
       this.setState({ auctionHouse });
       const owner = await auctionHouse.methods.owner().call();
       this.setState({ owner });
+      const artistCount = await auctionHouse.methods.artistCount().call();
+      this.setState({ artistCount });
+      for (var i = 1; i <= artistCount; i++) {
+        const artist = await auctionHouse.methods.artists(i).call();
+        this.setState({
+          artists: [...this.state.artists, artist],
+        });
+      }
       this.setState({ loading: false });
       if (this.state.account === this.state.owner) {
         this.setState({ admin: true });
@@ -64,6 +72,8 @@ class AddProduct extends Component {
     this.state = {
       account: "",
       owner: "",
+      artists: [],
+      artistCount: 0,
       loading: true,
       admin: true,
     };
@@ -118,18 +128,18 @@ class AddProduct extends Component {
     const artist_name = this.productArtist.value;
     const category = this.productCategory.value;
     const description = this.productDescription.value;
-    this.props.createProduct(name, price, artist_name, category, description);
+    this.createProduct(name, price, artist_name, category, description);
   };
 
   render() {
-    let { valid, written } = this.state,
-      divClass = "form-group has-";
-    valid && written && (divClass += "success");
-    !valid && written && (divClass += "danger");
-    if (this.props.owner === this.props.account) {
+    // let { valid, written } = this.state,
+    //   divClass = "form-group has-";
+    // valid && written && (divClass += "success");
+    // !valid && written && (divClass += "danger");
+    if (this.state.owner === this.state.account) {
       return (
         <div id="content">
-          {this.props.loading ? (
+          {this.state.loading ? (
             <div id="loader" className="text-center">
               <p className="text-center">Loading...</p>
             </div>
@@ -155,7 +165,7 @@ class AddProduct extends Component {
                       />
                     </div>
                   </div>
-                  <div className={divClass}>
+                  <div className="form-group">
                     <label className="col-sm-2 col-form-label">
                       Product price
                     </label>
@@ -190,7 +200,7 @@ class AddProduct extends Component {
                         required
                         placeholder="Select Artist"
                       >
-                        {this.props.artists.map((artist, key) => (
+                        {this.state.artists.map((artist, key) => (
                           <option value={artist.id_artist}>
                             {artist.artist_name}
                           </option>
@@ -243,7 +253,7 @@ class AddProduct extends Component {
                       className="form-control"
                       type="file"
                       accept=".jpg, .jpeg, .png, .bmp"
-                      onChange={this.props.captureFile}
+                      onChange={this.captureFile}
                       required
                     />
                   </div>
