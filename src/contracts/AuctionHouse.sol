@@ -1,15 +1,9 @@
-// pragma solidity ^0.5.0;
 pragma solidity >=0.5.0 <0.9.0;
 
-/**
- * The AuctionHouse
- contract does this and that...
- */
-
 contract AuctionHouse {
-	string public name;
+    string public name;
     address payable public owner;
-	uint public productCount = 0;
+    uint public productCount = 0;
     uint public auctionCount = 0;
     uint public productsOnAuction = 0;
     uint public activeAuction = 0;
@@ -215,7 +209,7 @@ contract AuctionHouse {
         _product.auction_started = true;
         auctionCount++;
         activeAuction++;
-        uint endTime = now + 1 days;
+        uint endTime = now + 10 days;
         uint target_price = _product.price * 2;
         products[_id] = _product;
         auctionList[auctionCount] = Auction(auctionCount, target_price, endTime, address(0), 0, 0, false, _product.id_product, false, false);
